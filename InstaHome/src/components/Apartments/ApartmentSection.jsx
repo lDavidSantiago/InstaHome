@@ -3,8 +3,9 @@ import apartamento1 from './Images/Apartamento1.jpg';
 import apartamento2 from './Images/Apartamento2.jpg'; 
 import apartamento3 from './Images/Apartamento3.jpg';
 import apartamento4 from './Images/Apartamento4.jpg';
-import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from "react-icons/fa";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
+import { motion } from 'framer-motion'; // Importa motion
 
 const apartments = [
   { id: '1', imagesArray: [apartamento1, apartamento2, apartamento3, apartamento4], price: '$1200/mes', location: 'Madrid', description: 'Hermoso apartamento en el centro de Madrid.', rooms: '3', bathrooms: '2', m2: '120' },
@@ -14,6 +15,7 @@ const apartments = [
 ];
 
 const ApartmentModal = ({ apartment, onClose }) => {
+  //estafo para controlar la imagen actual
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
@@ -33,16 +35,14 @@ const ApartmentModal = ({ apartment, onClose }) => {
   };
 
   return (
+    
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
       <div className="relative bg-white rounded-lg p-6 shadow-lg w-full max-w-4xl flex">
-        {/* Botón de cierre */}
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-600 hover:text-red-600">
           <IoMdClose size={24} />
         </button>
         
-        {/* Sección de la imagen */}
         <div className="w-3/5 relative flex items-center">
-          {/* Contador de imágenes en la parte inferior derecha */}
           <div className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
             {currentImageIndex + 1} / {apartment.imagesArray.length}
           </div>
@@ -51,7 +51,7 @@ const ApartmentModal = ({ apartment, onClose }) => {
             onClick={handlePrevImage}
             className="absolute left-2 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75"
           >
-            <FaArrowAltCircleLeft size={24} />
+            <IoIosArrowBack size={24} />
           </button>
           <img
             src={apartment.imagesArray[currentImageIndex]}
@@ -62,11 +62,10 @@ const ApartmentModal = ({ apartment, onClose }) => {
             onClick={handleNextImage}
             className="absolute right-2 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75"
           >
-            <FaArrowAltCircleRight size={24} />
+            <IoIosArrowForward size={24} />
           </button>
         </div>
 
-        {/* Sección de detalles */}
         <div className="w-2/5 p-6">
           <h3 className="text-2xl font-bold mb-4">{apartment.location}</h3>
           <p className="text-gray-700 text-lg mb-4">{apartment.description}</p>
@@ -79,7 +78,7 @@ const ApartmentModal = ({ apartment, onClose }) => {
           
           <p className="text-xl font-semibold text-[#1E90FF] mt-6">{apartment.price}</p>
 
-          <button className="mt-4 bg-[#1E90FF] text-white px-4 py-2 rounded-lg transition-all duration-300 hover:bg-[#007acc]">
+          <button className="mt-4 bg-[#1E90FF] text-white px-4 py-2 rounded-lg hover:bg-[#007acc] hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-out cursor-pointer">
             Contacto Directo
           </button>
         </div>
@@ -118,7 +117,12 @@ const ApartmentSection = () => {
   };
 
   return (
-    <section className="py-12 bg-gray-100">
+    <motion.section
+      className="py-12 bg-gray-100"
+      initial={{ opacity: 0, y: 20 }} // Estado inicial
+      animate={{ opacity: 1, y: 0 }} // Estado final
+      transition={{ duration: 0.6 }} // Duración de la animación
+    >
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">
           Available Apartments
@@ -154,16 +158,15 @@ const ApartmentSection = () => {
                 
                 <div className="contact flex items-center justify-between">
                   <p className="text-[#1E90FF] font-semibold text-sm">Arrendador</p>
-              
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-
+      {/* Modal */}
       <ApartmentModal apartment={selectedApartment} onClose={() => setSelectedApartment(null)} />
-    </section>
+    </motion.section>
   );
 };
 

@@ -1,18 +1,24 @@
-import Navbar from './components/Navbar/Navbar'
-import ApartmentSection from './components/Apartments/ApartmentSection'
+import React, { useState } from 'react';
+import Navbar from './components/Navbar/Navbar';
+import ApartmentSection from './components/Apartments/ApartmentSection';
+import HowItWorks from './components/HowItWorks/HowItWorks';
 
-import './App.css'
+import './App.css';
 
 function App() {
+  // Estado para controlar la sección activa
+  const [activeSection, setActiveSection] = useState('home');
+
   return (
-    /*Se implementa el import de las distintas secciones de la pagina y se llaman en el return para que sean mostradas */
     <>
       <div className='overflow-x-hidden'>
-      <Navbar />
-      <ApartmentSection /> 
+        <Navbar setActiveSection={setActiveSection} />
+        {/* Mostrar la sección correspondiente según el estado */}
+        {activeSection === 'home' && <ApartmentSection />}
+        {activeSection === 'howItWorks' && <HowItWorks />}
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

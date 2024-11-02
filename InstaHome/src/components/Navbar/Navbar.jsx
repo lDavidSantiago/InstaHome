@@ -6,26 +6,33 @@ import { IoHomeSharp } from "react-icons/io5";
 import { IoMenuOutline } from "react-icons/io5";
 import ResponsiveMenu from './ResponsiveMenu';
 
-const Navbar = () => {
+const Navbar = ({ setActiveSection }) => {
     const [open, setOpen] = React.useState(false);
+    
+    const handleNavClick = (section) => {
+        setActiveSection(section);
+        setOpen(false); // Cierra el menú móvil al seleccionar una opción
+    };
+
     return (
         <>
             <nav className="bg-white shadow">
                 <div className='container flex justify-between items-center py-4'>
-                    {/*Logo section*/}
+                    {/* Logo section */}
                     <div className='text-2xl flex items-center gap-2 font-bold'>
                         <IoHomeSharp className="text-primary" />
                         <span className='text-gray-800'>Insta</span>
                         <span className='text-secondary'>Home</span>
                     </div>
                     
-                    {/*Menu section*/}
+                    {/* Menu section */}
                     <div className='hidden md:block'>
                         <ul className='flex items-center gap-6 text-gray-600'>
                             {NavbarMenu.map((item) => (
                                 <li key={item.id}>
                                     <a 
-                                        href={item.link} 
+                                        href='#' // Cambiar a "#" para evitar scroll
+                                        onClick={() => handleNavClick(item.title === 'How it works' ? 'howItWorks' : 'home')}
                                         className='inline-block py-2 px-3 text-gray-600 font-semibold transition duration-300 hover:text-primary hover:border-b-2 hover:border-primary'
                                     >
                                         {item.title}
@@ -35,7 +42,7 @@ const Navbar = () => {
                         </ul>
                     </div>
                     
-                    {/*Icons section*/}
+                    {/* Icons section */}
                     <div className="flex items-center gap-4">
                         <button 
                             className="text-2xl hover:bg-primary hover:text-white rounded-full p-2 duration-200"
@@ -52,7 +59,7 @@ const Navbar = () => {
                         </button>
                     </div>
                     
-                    {/*Mobile Menu Icon*/}
+                    {/* Mobile Menu Icon */}
                     <div 
                         className='md:hidden' 
                         onClick={() => setOpen(!open)} 
@@ -62,7 +69,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </nav>
-            {/*Mobile menu*/}
+            {/* Mobile menu */}
             <ResponsiveMenu open={open} />
         </>
     );
