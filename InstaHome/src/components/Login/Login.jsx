@@ -1,38 +1,29 @@
 import React, { useState } from 'react';
 import { IoLogoGoogleplus } from "react-icons/io";
-import { registerWithEmail, signInWithGoogle } from '../../Firebase/Firebase'; // Importar funciones de autenticaciÃ³n
+import { registerWithEmail, signInWithGoogle } from '../../Firebase/Firebase'; // Importar las funciones de autenticación
 
 const Login = ({ onLoginSuccess }) => {
   const [isActive, setIsActive] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleRegister = async (e) => {
+  const handleManualLogin = async (e) => {
     e.preventDefault();
-    try {
-      await registerWithEmail(email, password);
-      onLoginSuccess();
-    } catch (error) {
-      console.error("Error registering:", error);
-    }
+    await registerWithEmail(email, password);
+    onLoginSuccess();
   };
 
   const handleGoogleLogin = async () => {
-    try {
-      await signInWithGoogle();
-      onLoginSuccess();
-    } catch (error) {
-      console.error("Error with Google login:", error);
-    }
+    await signInWithGoogle();
+    onLoginSuccess();
   };
 
   return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-r from-gray-200 to-blue-200">
-      <div className={`relative overflow-hidden bg-white shadow-lg w-[768px] max-w-full min-h-[480px] transition-transform duration-700 ease-in-out ${isActive ? 'translate-x-0' : ''}`}>
-        
-        {/* Sign-Up Form */}
-        <div className={`absolute top-0 left-0 h-full w-1/2 transition-opacity duration-700 ease-in-out ${isActive ? 'opacity-0' : 'opacity-100'}`}>
-          <div className="flex flex-col items-center justify-center h-full px-10 bg-white">
+      <div className="relative w-full max-w-4xl min-h-[480px] bg-white shadow-lg overflow-hidden rounded-lg">
+        <div className="absolute inset-0 flex transition-transform duration-700 ease-in-out">
+          {/* Sign-Up Form */}
+          <div className={`w-1/2 flex flex-col items-center justify-center px-10 bg-white transition-all duration-700 ease-in-out transform ${isActive ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'}`}>
             <h1 className="text-2xl font-bold">Create Account</h1>
             <div className="flex mt-4 space-x-2">
               <button onClick={handleGoogleLogin} className="flex items-center justify-center w-10 h-10 border rounded-full border-gray-300">
@@ -40,7 +31,7 @@ const Login = ({ onLoginSuccess }) => {
               </button>
             </div>
             <span className="text-sm mt-4">or use your email for registration</span>
-            <form onSubmit={handleRegister} className="w-full flex flex-col items-center">
+            <form onSubmit={handleManualLogin} className="w-full flex flex-col items-center">
               <input
                 type="text"
                 placeholder="Name"
@@ -68,11 +59,9 @@ const Login = ({ onLoginSuccess }) => {
               </button>
             </form>
           </div>
-        </div>
 
-        {/* Sign-In Form */}
-        <div className={`absolute top-0 left-0 h-full w-1/2 transition-opacity duration-700 ease-in-out ${isActive ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="flex flex-col items-center justify-center h-full px-10 bg-white">
+          {/* Sign-In Form */}
+          <div className={`w-1/2 flex flex-col items-center justify-center px-10 bg-white transition-all duration-700 ease-in-out transform ${isActive ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}>
             <h1 className="text-2xl font-bold">Sign In</h1>
             <div className="flex mt-4 space-x-2">
               <button onClick={handleGoogleLogin} className="flex items-center justify-center w-10 h-10 border rounded-full border-gray-300">
@@ -80,7 +69,7 @@ const Login = ({ onLoginSuccess }) => {
               </button>
             </div>
             <span className="text-sm mt-4">or use your email and password</span>
-            <form onSubmit={handleRegister} className="w-full flex flex-col items-center">
+            <form onSubmit={handleManualLogin} className="w-full flex flex-col items-center">
               <input
                 type="email"
                 placeholder="Email"
@@ -108,7 +97,15 @@ const Login = ({ onLoginSuccess }) => {
         </div>
 
         {/* Toggle Panels */}
-        <div className="absolute top-0 right-0 h-full w-1/2 transition-transform duration-700 ease-in-out bg-gradient-to-r from-indigo-600 to-purple-700 text-white">
+        <div className={`absolute top-0 right-0 h-full w-1/2 transition-transform duration-700 ease-in-out bg-gradient-to-r from-indigo-600 to-purple-700 text-white ${isActive ? '-translate-x-full' : 'translate-x-0'}`}
+         style={{
+            borderTopLeftRadius: isActive ? '0' : '120px',
+            borderBottomLeftRadius: isActive ? '0' : '120px',
+            borderTopRightRadius: isActive ? '120px' : '0',
+            borderBottomRightRadius: isActive ? '120px' : '0',
+            transition: 'border-radius 1.5s ease' // Transición lenta para borderRadius
+          }}
+        >
           <div className="absolute inset-0 flex items-center justify-center px-10">
             <div className="text-center">
               {isActive ? (
