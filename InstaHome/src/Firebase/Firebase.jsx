@@ -4,7 +4,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPas
 
 // Configuración de Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyAgjODswQwoAXie4TKsf3JCbu14NmGlVi8",
+  apiKey: "",
   authDomain: "instanthome-63227.firebaseapp.com",
   projectId: "instanthome-63227",
   storageBucket: "instanthome-63227.firebasestorage.app",
