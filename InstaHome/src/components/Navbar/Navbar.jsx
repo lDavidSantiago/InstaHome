@@ -6,7 +6,7 @@ import { IoHomeSharp } from "react-icons/io5";
 import { IoMenuOutline } from "react-icons/io5";
 import ResponsiveMenu from './ResponsiveMenu';
 
-const Navbar = ({ setActiveSection }) => {
+const Navbar = ({ setActiveSection, onLoginClick }) => {
     const [open, setOpen] = React.useState(false);
     
     const handleNavClick = (section) => {
@@ -51,6 +51,7 @@ const Navbar = ({ setActiveSection }) => {
                             <CiSearch className="text-gray-600" />
                         </button>
                         <button 
+                            onClick={onLoginClick} // Llama a la función para abrir el login
                             className="hover:bg-primary text-primary font-semibold 
                             hover:text-white rounded-md border-2 border-primary px-7 py-2 
                             duration-200 shadow-md hover:shadow-lg transition-all"
