@@ -4,11 +4,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPas
 
 // Configuración de Firebase
 const firebaseConfig = {
-<<<<<<< HEAD
   apiKey: "AIzaSyAgjODswQwoAXie4TKsf3JCbu14NmGlVi8",
-=======
-  apiKey: "",
->>>>>>> 8c65e0683790c76e4b93d09c612b7ae2809a6b65
   authDomain: "instanthome-63227.firebaseapp.com",
   projectId: "instanthome-63227",
   storageBucket: "instanthome-63227.firebasestorage.app",
@@ -23,7 +19,7 @@ const auth = getAuth(app);
 
 // Función de autenticación con Google
 export const signInWithGoogle = async () => {
-  const provider = new GoogleAuthProvider(); // Asegúrate de que GoogleAuthProvider esté correctamente importado
+  const provider = new GoogleAuthProvider(); 
   try {
     const result = await signInWithPopup(auth, provider);
     console.log("Usuario autenticado con Google:", result.user);
@@ -32,7 +28,6 @@ export const signInWithGoogle = async () => {
   }
 };
 
-// Función de registro con email y contraseña
 export const registerWithEmail = async (email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
