@@ -1,73 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RegisterHome from "../../Firebase/RegisterHome";
-import apartamento1 from "./Images/Apartamento1.jpg";
-import apartamento2 from "./Images/Apartamento2.jpg";
-import apartamento3 from "./Images/Apartamento3.jpg";
-import apartamento4 from "./Images/Apartamento4.jpg";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { motion } from "framer-motion";
-
-const initialApartments = [
-  {
-    id: "1",
-    imagesArray: [apartamento1, apartamento2, apartamento3, apartamento4],
-    price: "$1200/mes",
-    location: "Madrid",
-    description: "Hermoso apartamento en el centro de Madrid.",
-    rooms: "3",
-    bathrooms: "2",
-    m2: "120",
-  },
-  {
-    id: "2",
-    imagesArray: [apartamento2, apartamento1, apartamento3, apartamento4],
-    price: "$1500/mes",
-    location: "Barcelona",
-    description: "Apartamento moderno cerca de la playa.",
-    rooms: "2",
-    bathrooms: "1",
-    m2: "80",
-  },
-  {
-    id: "3",
-    imagesArray: [apartamento3, apartamento2, apartamento1, apartamento4],
-    price: "$1800/mes",
-    location: "Valencia",
-    description: "Amplio apartamento con vistas al mar.",
-    rooms: "4",
-    bathrooms: "3",
-    m2: "150",
-  },
-  {
-    id: "4",
-    imagesArray: [apartamento4, apartamento2, apartamento3, apartamento1],
-    price: "$2000/mes",
-    location: "Sevilla",
-    description: "Acogedor apartamento en el corazón de Sevilla.",
-    rooms: "1",
-    bathrooms: "1",
-    m2: "60",
-  },
-];
 
 const ApartmentSection = () => {
   const [isRegisterHomeVisible, setIsRegisterHomeVisible] = useState(false);
-  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
-  const [selectedApartment, setSelectedApartment] = useState(null);
-  const [apartments, setApartments] = useState(initialApartments);
+  const [apartments, setApartments] = useState([]);
   const [filters, setFilters] = useState({ minPrice: "", maxPrice: "", location: "" });
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const db = getFirestore();
+
+  useEffect(() => {
+    const loadApartments = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "actuCasa"));
+        const apartmentsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setApartments(apartmentsData);
+      } catch (error) {
+        console.error("Error al cargar apartamentos:", error);
+      }
+    };
+
+    loadApartments();
+  }, []);
 
   const handleHomeAdded = (newHome) => {
     setApartments((prev) => [
       ...prev,
       {
-        id: `${Date.now()}`,
-        imagesArray: [newHome.img],
-        price: `$${newHome.price}/mes`,
-        location: newHome.address,
-        description: newHome.description,
-        rooms: "Desconocido",
-        bathrooms: "Desconocido",
-        m2: "Desconocido",
+        id: newHome.id,
+        description: newHome.descripcion,
+        address: newHome.direccion,
+        price: newHome.precio,
+        img: newHome.img,
       },
     ]);
   };
@@ -76,15 +44,15 @@ const ApartmentSection = () => {
     const min = parseInt(filters.minPrice) || 0;
     const max = parseInt(filters.maxPrice) || Infinity;
 
-    const filtered = initialApartments.filter((apartment) => {
-      const price = parseInt(apartment.price.replace(/[^0-9]/g, ""));
+    const filtered = apartments.filter((apartment) => {
+      const price = parseInt(apartment.precio.replace(/[^0-9]/g, ""));
       const matchesLocation =
-        !filters.location || apartment.location.toLowerCase().includes(filters.location.toLowerCase());
+        !filters.location || apartment.direccion.toLowerCase().includes(filters.location.toLowerCase());
       return price >= min && price <= max && matchesLocation;
     });
 
     setApartments(filtered);
-    setIsFilterModalVisible(false); 
+    setIsFilterModalVisible(false);
   };
 
   const handleFilterChange = (e) => {
@@ -125,16 +93,15 @@ const ApartmentSection = () => {
               <div
                 key={apartment.id}
                 className="bg-white rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-xl transform hover:scale-105 transition"
-                onClick={() => setSelectedApartment(apartment)}
               >
                 <img
-                  src={apartment.imagesArray[0]}
+                  src={apartment.img}
                   alt="Imagen del apartamento"
                   className="w-full h-48 object-cover rounded-t-lg"
                 />
-                <h3 className="text-xl font-bold mt-4">{apartment.location}</h3>
-                <p className="text-gray-600">{apartment.description}</p>
-                <p className="text-blue-500 font-bold mt-2">{apartment.price}</p>
+                <h3 className="text-xl font-bold mt-4">{apartment.direccion}</h3>
+                <p className="text-gray-600">{apartment.descripcion}</p>
+                <p className="text-blue-500 font-bold mt-2">{apartment.precio}</p>
               </div>
             ))}
           </div>

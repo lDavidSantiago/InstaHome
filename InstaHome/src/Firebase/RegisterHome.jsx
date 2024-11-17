@@ -37,7 +37,6 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
         timestamp: serverTimestamp(),
       });
 
-      // Agregar el nuevo hogar a la lista en la página
       onHomeAdded({
         id: docRef.id,
         description: formData.descripcion,
@@ -48,7 +47,7 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
 
       setMessage("¡Hogar registrado con éxito!");
       setFormData({ descripcion: "", direccion: "", precio: "", img: "" });
-      onClose(); // Cierra el modal
+      onClose(); 
     } catch (error) {
       console.error("Error al registrar el hogar: ", error);
       setMessage("Ocurrió un error. Inténtalo de nuevo.");
