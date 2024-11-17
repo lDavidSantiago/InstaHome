@@ -2,13 +2,99 @@ import React, { useState, useEffect } from "react";
 import RegisterHome from "../../Firebase/RegisterHome";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { motion } from "framer-motion";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { IoMdClose } from "react-icons/io";
+
+const ApartmentModal = ({ apartment, onClose }) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [apartment]);
+
+  if (!apartment) return null;
+
+  const handleNextImage = () => {
+    setCurrentImageIndex(
+      (currentImageIndex + 1) % (apartment.imgArray?.length || 1)
+    );
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex(
+      currentImageIndex === 0
+        ? (apartment.imgArray?.length || 1) - 1
+        : currentImageIndex - 1
+    );
+  };
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
+      <div className="relative bg-white rounded-lg p-6 shadow-lg w-full max-w-4xl flex">
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-600 hover:text-red-600">
+          <IoMdClose size={24} />
+        </button>
+
+        <div className="w-3/5 relative flex items-center">
+          <div className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
+            {currentImageIndex + 1} / {apartment.imgArray?.length || 1}
+          </div>
+
+          <button
+            onClick={handlePrevImage}
+            className="absolute left-2 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75"
+          >
+            <IoIosArrowBack size={24} />
+          </button>
+          <img
+            src={apartment.imgArray?.[currentImageIndex] || apartment.img}
+            alt={apartment.direccion}
+            className="w-full h-80 object-cover rounded-l-lg"
+          />
+          <button
+            onClick={handleNextImage}
+            className="absolute right-2 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75"
+          >
+            <IoIosArrowForward size={24} />
+          </button>
+        </div>
+
+        <div className="w-2/5 p-6">
+          <h3 className="text-2xl font-bold mb-4">{apartment.direccion}</h3>
+          <p className="text-gray-700 text-lg mb-4">{apartment.descripcion}</p>
+
+          <div className="space-y-2 text-gray-600">
+            <p>
+              <strong>Habitaciones:</strong> {apartment.bedrooms || "N/A"}
+            </p>
+            <p>
+              <strong>Baños:</strong> {apartment.bathrooms || "N/A"}
+            </p>
+            <p>
+              <strong>Metros cuadrados:</strong> {apartment.m2 || "N/A"} m²
+            </p>
+          </div>
+
+          <p className="text-xl font-semibold text-[#1E90FF] mt-6">
+            {apartment.precio}
+          </p>
+
+          <button className="mt-4 bg-[#1E90FF] text-white px-4 py-2 rounded-lg hover:bg-[#007acc] hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-out cursor-pointer">
+            Contacto Directo
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ApartmentSection = () => {
   const [isRegisterHomeVisible, setIsRegisterHomeVisible] = useState(false);
   const [apartments, setApartments] = useState([]);
-  const [allApartments, setAllApartments] = useState([]); // Guardar todos los apartamentos para restaurar
+  const [allApartments, setAllApartments] = useState([]);
   const [filters, setFilters] = useState({ minPrice: "", maxPrice: "", location: "" });
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const [selectedApartment, setSelectedApartment] = useState(null); // Estado para el modal
   const db = getFirestore();
 
   useEffect(() => {
@@ -20,7 +106,7 @@ const ApartmentSection = () => {
           ...doc.data(),
         }));
         setApartments(apartmentsData);
-        setAllApartments(apartmentsData); // Guardar la lista completa
+        setAllApartments(apartmentsData);
       } catch (error) {
         console.error("Error al cargar apartamentos:", error);
       }
@@ -45,55 +131,11 @@ const ApartmentSection = () => {
       },
     ];
     setApartments(newApartmentsList);
-    setAllApartments(newApartmentsList); // Mantener todos los apartamentos actualizados
-  };
-
-  const applyFilters = () => {
-    let filteredApartments = allApartments; // Usar todos los apartamentos almacenados
-
-    // Filtrar por precio mínimo si se proporciona
-    if (filters.minPrice) {
-      const min = parseInt(filters.minPrice) || 0;
-      filteredApartments = filteredApartments.filter((apartment) => {
-        const price = parseInt(apartment.precio.replace(/[^0-9]/g, ""));
-        return price >= min;
-      });
-    }
-
-    // Filtrar por precio máximo si se proporciona
-    if (filters.maxPrice) {
-      const max = parseInt(filters.maxPrice) || Infinity;
-      filteredApartments = filteredApartments.filter((apartment) => {
-        const price = parseInt(apartment.precio.replace(/[^0-9]/g, ""));
-        return price <= max;
-      });
-    }
-
-    // Filtrar por ubicación si se proporciona
-    if (filters.location) {
-      filteredApartments = filteredApartments.filter((apartment) =>
-        apartment.direccion.toLowerCase().includes(filters.location.toLowerCase())
-      );
-    }
-
-    setApartments(filteredApartments); // Actualizar apartamentos filtrados
-    setIsFilterModalVisible(false);
-  };
-
-  const clearFilters = () => {
-    setFilters({ minPrice: "", maxPrice: "", location: "" }); // Limpiar filtros
-    setApartments(allApartments); // Restaurar todos los apartamentos
-    setIsFilterModalVisible(false);
-  };
-
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
+    setAllApartments(newApartmentsList);
   };
 
   return (
     <>
-      {/* Sección de apartamentos */}
       <motion.section
         className="py-12 bg-gray-100"
         initial={{ opacity: 0, y: 20 }}
@@ -106,7 +148,6 @@ const ApartmentSection = () => {
           </h2>
 
           <div className="flex justify-between mb-6">
-            {/* Botones de filtros y registro de hogar */}
             <button
               onClick={() => setIsFilterModalVisible(true)}
               className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
@@ -122,11 +163,11 @@ const ApartmentSection = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Mapeo de apartamentos */}
             {apartments.map((apartment) => (
               <div
                 key={apartment.id}
                 className="bg-white rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-xl transform hover:scale-105 transition"
+                onClick={() => setSelectedApartment(apartment)} // Abrir modal al hacer clic
               >
                 <img
                   src={apartment.img}
@@ -142,59 +183,18 @@ const ApartmentSection = () => {
         </div>
       </motion.section>
 
-      {isFilterModalVisible && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
-            <h3 className="text-lg font-bold mb-4">Filtrar Apartamentos</h3>
-            <div className="space-y-4">
-              <input
-                type="number"
-                name="minPrice"
-                placeholder="Precio mínimo ($)"
-                className="w-full p-2 border rounded"
-                value={filters.minPrice}
-                onChange={handleFilterChange}
-              />
-              <input
-                type="number"
-                name="maxPrice"
-                placeholder="Precio máximo ($)"
-                className="w-full p-2 border rounded"
-                value={filters.maxPrice}
-                onChange={handleFilterChange}
-              />
-              <input
-                type="text"
-                name="location"
-                placeholder="Ciudad"
-                className="w-full p-2 border rounded"
-                value={filters.location}
-                onChange={handleFilterChange}
-              />
-            </div>
-            <div className="flex justify-between mt-6">
-              <button
-                onClick={clearFilters}
-                className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 mr-2"
-              >
-                Limpiar Filtros
-              </button>
-              <button
-                onClick={applyFilters}
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
-              >
-                Aplicar Filtros
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <RegisterHome
         isVisible={isRegisterHomeVisible}
         onClose={() => setIsRegisterHomeVisible(false)}
         onHomeAdded={handleHomeAdded}
       />
+
+      {selectedApartment && (
+        <ApartmentModal
+          apartment={selectedApartment}
+          onClose={() => setSelectedApartment(null)}
+        />
+      )}
     </>
   );
 };

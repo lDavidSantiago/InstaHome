@@ -10,29 +10,26 @@ import './App.css';
 
 function App() {
     const [activeSection, setActiveSection] = useState('home');
-    const [showLogin, setShowLogin] = useState(false);
 
     const handleLoginSuccess = () => {
-        setShowLogin(false);
-        setActiveSection('home');
+        setActiveSection('home'); // Cuando inicie sesión, regresa a 'home'
     };
 
     const handleShowLogin = () => {
-        setShowLogin(true);
-        setActiveSection('');
+        setActiveSection('login'); // Cambia la sección activa a 'login'
     };
 
     return (
         <div className="overflow-x-hidden">
             <Navbar setActiveSection={setActiveSection} onLoginClick={handleShowLogin} />
-            {showLogin ? (
+            {activeSection === 'login' ? (
                 <LoginTab onLoginSuccess={handleLoginSuccess} />
             ) : (
                 <>
                     {activeSection === 'home' && <ApartmentSection />}
                     {activeSection === 'howItWorks' && <HowItWorks />}
                     {activeSection === 'help' && <Help />}
-                    {activeSection === 'profile' && <Profile />} {/* Mostrar Profile */}
+                    {activeSection === 'profile' && <Profile />}
                 </>
             )}
         </div>

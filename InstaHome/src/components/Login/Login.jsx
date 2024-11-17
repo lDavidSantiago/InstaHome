@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoLogoGoogleplus } from "react-icons/io";
 import { registerWithEmail, signInWithGoogle } from '../../Firebase/Firebase'; // Importar las funciones de autenticación
 
@@ -7,9 +7,15 @@ const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // Efecto para limpiar los inputs cada vez que cambia entre Sign Up y Sign In
+  useEffect(() => {
+    setEmail('');
+    setPassword('');
+  }, [isActive]);
+
   const handleManualLogin = async (e) => {
     e.preventDefault();
-    await registerWithEmail(email, password);
+    await registerWithEmail(email, password,name);
     onLoginSuccess();
   };
 
@@ -32,12 +38,6 @@ const Login = ({ onLoginSuccess }) => {
             </div>
             <span className="text-sm mt-4">or use your email for registration</span>
             <form onSubmit={handleManualLogin} className="w-full flex flex-col items-center">
-              <input
-                type="text"
-                placeholder="Name"
-                className="w-full p-3 mt-2 text-sm bg-gray-200 rounded-lg outline-none"
-                required
-              />
               <input
                 type="email"
                 placeholder="Email"
@@ -98,7 +98,7 @@ const Login = ({ onLoginSuccess }) => {
 
         {/* Toggle Panels */}
         <div className={`absolute top-0 right-0 h-full w-1/2 transition-transform duration-700 ease-in-out bg-gradient-to-r from-indigo-600 to-purple-700 text-white ${isActive ? '-translate-x-full' : 'translate-x-0'}`}
-         style={{
+          style={{
             borderTopLeftRadius: isActive ? '0' : '120px',
             borderBottomLeftRadius: isActive ? '0' : '120px',
             borderTopRightRadius: isActive ? '120px' : '0',
