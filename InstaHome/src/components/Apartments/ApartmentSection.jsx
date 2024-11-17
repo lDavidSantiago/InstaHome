@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 const ApartmentSection = () => {
   const [isRegisterHomeVisible, setIsRegisterHomeVisible] = useState(false);
   const [apartments, setApartments] = useState([]);
+  const [allApartments, setAllApartments] = useState([]); // Guardar todos los apartamentos para restaurar
   const [filters, setFilters] = useState({ minPrice: "", maxPrice: "", location: "" });
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const db = getFirestore();
@@ -19,6 +20,7 @@ const ApartmentSection = () => {
           ...doc.data(),
         }));
         setApartments(apartmentsData);
+        setAllApartments(apartmentsData); // Guardar la lista completa
       } catch (error) {
         console.error("Error al cargar apartamentos:", error);
       }
@@ -28,30 +30,59 @@ const ApartmentSection = () => {
   }, []);
 
   const handleHomeAdded = (newHome) => {
-    setApartments((prev) => [
-      ...prev,
+    const newApartmentsList = [
+      ...apartments,
       {
         id: newHome.id,
         description: newHome.descripcion,
         address: newHome.direccion,
         price: newHome.precio,
         img: newHome.img,
+        details: newHome.details,
+        m2: newHome.m2,
+        bedrooms: newHome.bedrooms,
+        bathrooms: newHome.bathrooms,
       },
-    ]);
+    ];
+    setApartments(newApartmentsList);
+    setAllApartments(newApartmentsList); // Mantener todos los apartamentos actualizados
   };
 
   const applyFilters = () => {
-    const min = parseInt(filters.minPrice) || 0;
-    const max = parseInt(filters.maxPrice) || Infinity;
+    let filteredApartments = allApartments; // Usar todos los apartamentos almacenados
 
-    const filtered = apartments.filter((apartment) => {
-      const price = parseInt(apartment.precio.replace(/[^0-9]/g, ""));
-      const matchesLocation =
-        !filters.location || apartment.direccion.toLowerCase().includes(filters.location.toLowerCase());
-      return price >= min && price <= max && matchesLocation;
-    });
+    // Filtrar por precio mínimo si se proporciona
+    if (filters.minPrice) {
+      const min = parseInt(filters.minPrice) || 0;
+      filteredApartments = filteredApartments.filter((apartment) => {
+        const price = parseInt(apartment.precio.replace(/[^0-9]/g, ""));
+        return price >= min;
+      });
+    }
 
-    setApartments(filtered);
+    // Filtrar por precio máximo si se proporciona
+    if (filters.maxPrice) {
+      const max = parseInt(filters.maxPrice) || Infinity;
+      filteredApartments = filteredApartments.filter((apartment) => {
+        const price = parseInt(apartment.precio.replace(/[^0-9]/g, ""));
+        return price <= max;
+      });
+    }
+
+    // Filtrar por ubicación si se proporciona
+    if (filters.location) {
+      filteredApartments = filteredApartments.filter((apartment) =>
+        apartment.direccion.toLowerCase().includes(filters.location.toLowerCase())
+      );
+    }
+
+    setApartments(filteredApartments); // Actualizar apartamentos filtrados
+    setIsFilterModalVisible(false);
+  };
+
+  const clearFilters = () => {
+    setFilters({ minPrice: "", maxPrice: "", location: "" }); // Limpiar filtros
+    setApartments(allApartments); // Restaurar todos los apartamentos
     setIsFilterModalVisible(false);
   };
 
@@ -62,6 +93,7 @@ const ApartmentSection = () => {
 
   return (
     <>
+      {/* Sección de apartamentos */}
       <motion.section
         className="py-12 bg-gray-100"
         initial={{ opacity: 0, y: 20 }}
@@ -74,6 +106,7 @@ const ApartmentSection = () => {
           </h2>
 
           <div className="flex justify-between mb-6">
+            {/* Botones de filtros y registro de hogar */}
             <button
               onClick={() => setIsFilterModalVisible(true)}
               className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
@@ -89,6 +122,7 @@ const ApartmentSection = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Mapeo de apartamentos */}
             {apartments.map((apartment) => (
               <div
                 key={apartment.id}
@@ -138,12 +172,12 @@ const ApartmentSection = () => {
                 onChange={handleFilterChange}
               />
             </div>
-            <div className="flex justify-end mt-6">
+            <div className="flex justify-between mt-6">
               <button
-                onClick={() => setIsFilterModalVisible(false)}
+                onClick={clearFilters}
                 className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 mr-2"
               >
-                Cancelar
+                Limpiar Filtros
               </button>
               <button
                 onClick={applyFilters}
