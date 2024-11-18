@@ -1,11 +1,37 @@
 // src/components/HelpSection/HelpSection.js
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import emailjs from 'emailjs-com'; // Importa EmailJS
+
+// Inicializa EmailJS
+(function() {
+  emailjs.init("beyEpuaGTYDor1lsH"); // Reemplaza con tu USER_ID de EmailJS
+})();
 
 const HelpSection = () => {
   const [activeSection, setActiveSection] = useState('faq');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+
+  // Función para enviar correo
+  const sendEmail = (e) => {
+    e.preventDefault(); // Evita que se recargue la página
+
+    const templateParams = {
+      to_name: 'Soporte',
+      from_name: email,
+      message: message
+    };
+
+    emailjs.send('service_1zuassb', 'template_6t9yoki', templateParams)
+      .then((response) => {
+        console.log('Correo enviado con éxito:', response.status, response.text);
+        alert('Mensaje enviado exitosamente');
+      }, (error) => {
+        console.error('Error al enviar el correo:', error);
+        alert('Hubo un error al enviar el correo');
+      });
+  };
 
   const renderContent = () => {
     switch (activeSection) {
@@ -41,7 +67,7 @@ const HelpSection = () => {
         return (
           <div className="text-left">
             <h3 className="text-xl font-semibold text-gray-700 mb-2">Contacto Directo con Soporte</h3>
-            <form>
+            <form onSubmit={sendEmail}>
               <div className="mb-4">
                 <label className="block text-gray-600" htmlFor="email">Correo Electrónico:</label>
                 <input
@@ -67,10 +93,8 @@ const HelpSection = () => {
                 />
               </div>
               <button
-                type="button"
+                type="submit"
                 className="bg-blue-500 text-white px-4 py-2 rounded"
-                // Aquí podrías implementar la funcionalidad para enviar el correo
-                onClick={() => alert('Mensaje enviado')}
               >
                 Enviar
               </button>
