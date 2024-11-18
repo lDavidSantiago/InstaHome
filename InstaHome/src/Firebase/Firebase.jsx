@@ -36,3 +36,12 @@ export const registerWithEmail = async (email, password) => {
     console.error("Error en el registro:", error.message);
   }
 };
+
+export const logout = async () => {
+  try {
+      await signOut(auth); // Cerrar sesión en Firebase
+      console.log("Usuario deslogueado");
+  } catch (error) {
+      console.error("Error al cerrar sesión:", error.message);
+  }
+};

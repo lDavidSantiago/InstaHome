@@ -1,6 +1,7 @@
+// src/Components/Navbar/Navbar.jsx
 import React from 'react';
 
-const Navbar = ({ setActiveSection, onLoginClick }) => {
+const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
     const handleNavClick = (section) => {
         setActiveSection(section);
     };
@@ -49,12 +50,21 @@ const Navbar = ({ setActiveSection, onLoginClick }) => {
                         </a>
                     </li>
                 </ul>
-                <button
-                    onClick={onLoginClick}
-                    className="bg-primary text-white font-semibold py-2 px-4 rounded hover:bg-secondary transition duration-300"
-                >
-                    Login
-                </button>
+                {isLoggedIn ? (
+                    <button
+                        onClick={onLogout}
+                        className="bg-primary text-white font-semibold py-2 px-4 rounded hover:bg-secondary transition duration-300"
+                    >
+                        Logout
+                    </button>
+                ) : (
+                    <button
+                        onClick={onLoginClick}
+                        className="bg-primary text-white font-semibold py-2 px-4 rounded hover:bg-secondary transition duration-300"
+                    >
+                        Login
+                    </button>
+                )}
             </div>
         </nav>
     );

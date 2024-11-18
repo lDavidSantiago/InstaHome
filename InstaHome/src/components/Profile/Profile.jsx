@@ -19,10 +19,20 @@ const Profile = () => {
     // Función para manejar el cambio en los campos editables
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setEditableData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+
+        // Si el campo es "stars", aseguramos que el valor esté entre 1 y 5
+        if (name === 'stars') {
+            const newValue = value === '' ? 1 : Math.max(1, Math.min(5, parseInt(value, 10)));
+            setEditableData((prev) => ({
+                ...prev,
+                [name]: newValue,
+            }));
+        } else {
+            setEditableData((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
     };
 
     // Función para guardar los cambios
@@ -42,7 +52,7 @@ const Profile = () => {
                 <div className="flex items-center justify-center mb-6">
                     <FaUserCircle className="text-gray-500 text-8xl" />
                 </div>
-                
+
                 <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">{userData.name}</h2>
                 <p className="text-center text-gray-500 mb-4">Cédula: {userData.cedula}</p>
 
@@ -83,15 +93,26 @@ const Profile = () => {
                     <div>
                         <label className="block text-gray-700 font-semibold">Puntaje:</label>
                         {isEditing ? (
-                            <input
-                                type="number"
-                                name="stars"
-                                value={editableData.stars}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 rounded p-2"
-                                min="1"
-                                max="5"
-                            />
+                            <div className="flex space-x-2">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <button
+                                        key={star}
+                                        onClick={() => setEditableData((prev) => ({ ...prev, stars: star }))}
+                                        className={`w-8 h-8 rounded-full ${editableData.stars === star ? 'bg-yellow-400' : 'bg-gray-300'}`}
+                                    >
+                                        <FaStar className={`text-xl ${editableData.stars === star ? 'text-white' : 'text-gray-500'}`} />
+                                    </button>
+                                ))}
+                                <input
+                                    type="number"
+                                    name="stars"
+                                    value={editableData.stars}
+                                    onChange={handleChange}
+                                    className="w-16 border border-gray-300 rounded p-2"
+                                    min="1"
+                                    max="5"
+                                />
+                            </div>
                         ) : (
                             <div className="flex items-center">
                                 {[...Array(userData.stars)].map((_, i) => (
