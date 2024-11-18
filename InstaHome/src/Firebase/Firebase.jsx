@@ -1,6 +1,13 @@
 // src/Firebase/Firebase.jsx
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth"; // Importa GoogleAuthProvider
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  createUserWithEmailAndPassword, 
+  signOut 
+} from "firebase/auth";
+import { getFirestore, setDoc, doc } from "firebase/firestore"; 
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -13,35 +20,64 @@ const firebaseConfig = {
   measurementId: "G-VH5B1QJXEN"
 };
 
-// Inicialización de Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
-// Función de autenticación con Google
+// Iniciar sesión con Google
 export const signInWithGoogle = async () => {
-  const provider = new GoogleAuthProvider(); 
+  const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
-    console.log("Usuario autenticado con Google:", result.user);
+    const user = result.user;
+
+    // Crear o actualizar perfil en la colección `users`
+    const userRef = doc(db, "users", user.uid);
+    await setDoc(userRef, {
+      name: user.displayName || "Sin nombre",
+      email: user.email,
+      cedula: "",
+      phone: "",
+      creationDate: user.metadata.creationTime,
+      lastLogin: new Date().toISOString(),
+      role: "user"
+    }, { merge: true });
+
+    console.log("Perfil guardado:", user.uid);
   } catch (error) {
     console.error("Error en autenticación con Google:", error.message);
   }
 };
 
-export const registerWithEmail = async (email, password) => {
+// Registrar con email y contraseña
+export const registerWithEmail = async (email, password, data) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    console.log("Usuario registrado:", userCredential.user);
+    const user = userCredential.user;
+
+    const userRef = doc(db, "users", user.uid);
+    await setDoc(userRef, {
+      name: data.name || "Sin nombre",
+      email: user.email,
+      cedula: data.cedula || "",
+      phone: data.phone || "",
+      creationDate: user.metadata.creationTime,
+      lastLogin: new Date().toISOString(),
+      role: "user"
+    });
+
+    console.log("Usuario registrado y perfil creado:", user.uid);
   } catch (error) {
-    console.error("Error en el registro:", error.message);
+    console.error("Error al registrar:", error.message);
   }
 };
 
+// Cerrar sesión
 export const logout = async () => {
   try {
-      await signOut(auth); // Cerrar sesión en Firebase
-      console.log("Usuario deslogueado");
+    await signOut(auth);
+    console.log("Sesión cerrada");
   } catch (error) {
-      console.error("Error al cerrar sesión:", error.message);
+    console.error("Error al cerrar sesión:", error.message);
   }
 };
