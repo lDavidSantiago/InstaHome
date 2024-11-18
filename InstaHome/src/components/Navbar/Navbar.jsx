@@ -1,9 +1,14 @@
-// src/Components/Navbar/Navbar.jsx
-import React from 'react';
+import React, { useState } from 'react';
 
 const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
+    const [open, setOpen] = useState(false);
+
     const handleNavClick = (section) => {
         setActiveSection(section);
+    };
+
+    const handleClick = () => {
+        setOpen(!open);
     };
 
     return (
@@ -14,7 +19,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                 </div>
                 <ul className="flex space-x-8">
                     <li>
-                        <a 
+                        <a
                             href="#"
                             onClick={() => handleNavClick('home')}
                             className="inline-block py-2 px-3 text-gray-600 font-semibold transition duration-300 hover:text-primary hover:border-b-2 hover:border-primary"
@@ -23,7 +28,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                         </a>
                     </li>
                     <li>
-                        <a 
+                        <a
                             href="#"
                             onClick={() => handleNavClick('howItWorks')}
                             className="inline-block py-2 px-3 text-gray-600 font-semibold transition duration-300 hover:text-primary hover:border-b-2 hover:border-primary"
@@ -32,7 +37,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                         </a>
                     </li>
                     <li>
-                        <a 
+                        <a
                             href="#"
                             onClick={() => handleNavClick('help')}
                             className="inline-block py-2 px-3 text-gray-600 font-semibold transition duration-300 hover:text-primary hover:border-b-2 hover:border-primary"
@@ -40,23 +45,36 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                             Help
                         </a>
                     </li>
-                    <li>
-                        <a 
-                            href="#"
-                            onClick={() => handleNavClick('profile')}
-                            className="inline-block py-2 px-3 text-gray-600 font-semibold transition duration-300 hover:text-primary hover:border-b-2 hover:border-primary"
-                        >
-                            Profile
-                        </a>
-                    </li>
                 </ul>
                 {isLoggedIn ? (
-                    <button
-                        onClick={onLogout}
-                        className="bg-primary text-white font-semibold py-2 px-4 rounded hover:bg-secondary transition duration-300"
-                    >
-                        Logout
-                    </button>
+                    <div className="relative">
+                        <button
+                            onClick={handleClick}
+                            className="bg-white rounded-full shadow-lg p-5 hover:bg-gray-200 transition-colors"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            </svg>
+                        </button>
+                        {open && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2">
+                                <a
+                                    href="#"
+                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    onClick={() => handleNavClick('profile')}
+                                >
+                                    Profile
+                                </a>
+                                <a
+                                    href="#"
+                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    onClick={onLogout}
+                                >
+                                    Logout
+                                </a>
+                            </div>
+                        )}
+                    </div>
                 ) : (
                     <button
                         onClick={onLoginClick}

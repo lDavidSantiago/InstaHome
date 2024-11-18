@@ -4,18 +4,24 @@ import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { motion } from "framer-motion";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
+import jsPDF from "jspdf";
 
 const ApartmentModal = ({ apartment, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [contractGenerated, setContractGenerated] = useState(false);
+
   useEffect(() => {
     setCurrentImageIndex(0);
   }, [apartment]);
+
   if (!apartment) return null;
+
   const handleNextImage = () => {
     setCurrentImageIndex(
       (currentImageIndex + 1) % (apartment.imgArray?.length || 1)
     );
   };
+
   const handlePrevImage = () => {
     setCurrentImageIndex(
       currentImageIndex === 0
@@ -23,6 +29,66 @@ const ApartmentModal = ({ apartment, onClose }) => {
         : currentImageIndex - 1
     );
   };
+
+  const generateContract = () => {
+    const doc = new jsPDF();
+    doc.setFont("helvetica", "normal");
+  
+    // Título del contrato
+    doc.setFontSize(18);
+    doc.text("CONTRATO DE ARRENDAMIENTO", 20, 20);
+    doc.setFontSize(12);
+    
+    // Información sobre el apartamento
+    doc.text(`Apartamento: ${apartment.direccion}`, 20, 30);
+    doc.text(`Descripción: ${apartment.descripcion}`, 20, 40);
+    doc.text(`Precio de arrendamiento: ${apartment.precio}`, 20, 50);
+    doc.text(`Habitaciones: ${apartment.bedrooms}`, 20, 60);
+    doc.text(`Baños: ${apartment.bathrooms}`, 20, 70);
+    doc.text(`Metros cuadrados: ${apartment.m2} m²`, 20, 80);
+    
+    doc.text("------------------------------------------------------------------------", 20, 90);
+  
+    // Detalles de los arrendadores e inquilinos
+    doc.text("Partes del contrato:", 20, 100);
+    doc.text("Arrendador: ___________________________", 20, 110);
+    doc.text("Inquilino: ___________________________", 20, 120);
+  
+    // Detalles de la duración y condiciones
+    doc.text("Duración del contrato:", 20, 130);
+    doc.text("La duración del contrato es de 12 meses, comenzando desde la firma del contrato.", 20, 140);
+  
+    // Condiciones de pago
+    doc.text("Condiciones de pago:", 20, 150);
+    doc.text(
+      `El precio de arrendamiento mensual es de ${apartment.precio}. El pago se realizará el primer día de cada mes a través de transferencia bancaria.`,
+      20,
+      160
+    );
+  
+    // Obligaciones de las partes
+    doc.text("Obligaciones del arrendador:", 20, 170);
+    doc.text("- Entregar el apartamento en condiciones habitables.", 20, 180);
+    doc.text("- Mantener el apartamento libre de vicios o defectos.", 20, 190);
+    
+    doc.text("Obligaciones del inquilino:", 20, 200);
+    doc.text("- Pagar el arrendamiento en tiempo y forma.", 20, 210);
+    doc.text("- No subarrendar el apartamento sin consentimiento del arrendador.", 20, 220);
+  
+    // Firma
+    doc.text("Firmas:", 20, 230);
+    doc.text("Arrendador: ___________________________", 20, 240);
+    doc.text("Inquilino: ___________________________", 20, 250);
+  
+    // Fecha y lugar
+    doc.text(`Fecha: ___________________________`, 20, 260);
+    doc.text(`Lugar: ___________________________`, 20, 270);
+  
+    // Guardar el contrato como archivo PDF
+    doc.save(`Contrato_Arrendamiento_${apartment.direccion}.pdf`);
+    setContractGenerated(true);  // Marcar el contrato como generado
+  };
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
       <div className="relative bg-white rounded-lg p-6 shadow-lg w-full max-w-4xl flex">
@@ -68,9 +134,15 @@ const ApartmentModal = ({ apartment, onClose }) => {
           <p className="text-xl font-semibold text-[#1E90FF] mt-6">
             {apartment.precio}
           </p>
-          <button className="mt-4 bg-[#1E90FF] text-white px-4 py-2 rounded-lg hover:bg-[#007acc] hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-out cursor-pointer">
-            Contacto Directo
+          <button 
+            className="mt-4 bg-[#1E90FF] text-white px-4 py-2 rounded-lg hover:bg-[#007acc] hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-out cursor-pointer"
+            onClick={generateContract}
+          >
+            Alquilar y Generar Contrato
           </button>
+          {contractGenerated && (
+            <p className="mt-4 text-green-500">¡Contrato generado con éxito!</p>
+          )}
         </div>
       </div>
     </div>
