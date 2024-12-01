@@ -331,6 +331,12 @@ const ApartmentSection = () => {
           </div>
         </div>
       )}
+        {selectedApartment && (
+        <ApartmentModal
+          apartment={selectedApartment}
+          onClose={() => setSelectedApartment(null)}
+        />
+      )}
     </>
   );
 };

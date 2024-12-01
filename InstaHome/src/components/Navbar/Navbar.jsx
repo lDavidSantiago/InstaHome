@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { FaFacebook } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
+import { SiGooglemaps } from "react-icons/si";
 
 const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
     const [open, setOpen] = useState(false);
@@ -12,11 +15,28 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
     };
 
     return (
-        <nav className="relative bg-white shadow-lg py-4 z-50 ">
-            <div className="container mx-auto flex justify-between items-center px-6">
+        <header className="w-full shadow-md">
+            {/* Sección superior */}
+            <div className="bg-sky-900 py-10 text-sm">
+                <div className="container mx-auto flex justify-between items-center px-80">
                 <div className="text-2xl font-bold text-primary cursor-pointer" onClick={() => handleNavClick('home')}>
                     Insta<span className="text-secondary">Home</span>
                 </div>
+                    <div className="text-white flex items-center space-x-4">
+                        <span>📞 6022250253</span>
+                        <span>📧 InstaHome@gmail.com</span>
+                        <SiGooglemaps />
+                        <span>Tulúa, Valle del Cauca, Colombia</span>
+                    </div>
+                    <div className="text-2xl text-white flex space-x-4">
+                        <FaFacebook />
+                        <FaInstagram />
+                    </div>
+                </div>
+            </div>
+
+        <nav className="bg-white shadow-lg py-2 ">
+            <div className="container mx-auto flex justify-between items-center px-80">
                 <ul className="flex space-x-8">
                     <li>
                         <a
@@ -92,6 +112,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                 )}
             </div>
         </nav>
+    </header>
     );
 };
 
