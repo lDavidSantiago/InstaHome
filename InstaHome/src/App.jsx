@@ -7,6 +7,7 @@ import LoginTab from './components/Login/Login';
 import Help from './components/Help/Help';
 import Profile from './components/Profile/Profile'; // Importar el nuevo componente Profile
 import { logout } from './Firebase/Firebase'; // Importar la función de logout
+import RegisterHome from "./Firebase/RegisterHome";
 
 import './App.css';
 
@@ -45,6 +46,12 @@ function App() {
                     {activeSection === 'howItWorks' && <HowItWorks />}
                     {activeSection === 'help' && <Help />}
                     {activeSection === 'profile' && <Profile />}
+                    {activeSection === "RegisterHome" && (
+                        <RegisterHome
+                        isVisible={true}
+                        onClose={() => setActiveSection("home")} // Regresar a Home después del cierre
+                        />
+                     )}
                 </>
             )}
         </div>

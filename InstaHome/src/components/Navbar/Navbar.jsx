@@ -12,7 +12,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
     };
 
     return (
-        <nav className="bg-white shadow-md py-4">
+        <nav className="relative bg-white shadow-lg py-4 z-50 ">
             <div className="container mx-auto flex justify-between items-center px-6">
                 <div className="text-2xl font-bold text-primary cursor-pointer" onClick={() => handleNavClick('home')}>
                     Insta<span className="text-secondary">Home</span>
@@ -57,13 +57,20 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                             </svg>
                         </button>
                         {open && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2">
+                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-2xl py-2 z-50">
                                 <a
                                     href="#"
                                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                                     onClick={() => handleNavClick('profile')}
                                 >
                                     Profile
+                                </a>
+                                <a
+                                    href="#"
+                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    onClick={() => handleNavClick('RegisterHome')}
+                                >
+                                    RegisterHome
                                 </a>
                                 <a
                                     href="#"

@@ -29,7 +29,7 @@ const Login = ({ onLoginSuccess }) => {
       <div className="relative w-full max-w-4xl min-h-[480px] bg-white shadow-lg overflow-hidden rounded-lg">
         <div className="absolute inset-0 flex transition-transform duration-700 ease-in-out">
           {/* Sign-Up Form */}
-          <div className={`w-1/2 flex flex-col items-center justify-center px-10 bg-white transition-all duration-700 ease-in-out transform ${isActive ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'}`}>
+          <div className={`w-1/2 flex flex-col items-center justify-center px-10 bg-white transition-all duration-500 ease-in transform ${isActive ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'}`}>
             <h1 className="text-2xl font-bold">Create Account</h1>
             <div className="flex mt-4 space-x-2">
               <button onClick={handleGoogleLogin} className="flex items-center justify-center w-10 h-10 border rounded-full border-gray-300">
@@ -61,7 +61,7 @@ const Login = ({ onLoginSuccess }) => {
           </div>
 
           {/* Sign-In Form */}
-          <div className={`w-1/2 flex flex-col items-center justify-center px-10 bg-white transition-all duration-700 ease-in-out transform ${isActive ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}>
+          <div className={`w-1/2 flex flex-col items-center justify-center px-10 bg-white transition-all duration-500 ease-in transform ${isActive ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}>
             <h1 className="text-2xl font-bold">Sign In</h1>
             <div className="flex mt-4 space-x-2">
               <button onClick={handleGoogleLogin} className="flex items-center justify-center w-10 h-10 border rounded-full border-gray-300">
@@ -97,13 +97,13 @@ const Login = ({ onLoginSuccess }) => {
         </div>
 
         {/* Toggle Panels */}
-        <div className={`absolute top-0 right-0 h-full w-1/2 transition-transform duration-700 ease-in-out bg-gradient-to-r from-indigo-600 to-purple-700 text-white ${isActive ? '-translate-x-full' : 'translate-x-0'}`}
+        <div className={`absolute top-0 right-0 h-full w-1/2 transition-transform duration-1000 ease-in-out bg-gradient-to-r from-indigo-600 to-purple-700 text-white ${isActive ? '-translate-x-full' : 'translate-x-0'}`}
           style={{
             borderTopLeftRadius: isActive ? '0' : '120px',
             borderBottomLeftRadius: isActive ? '0' : '120px',
             borderTopRightRadius: isActive ? '120px' : '0',
             borderBottomRightRadius: isActive ? '120px' : '0',
-            transition: 'border-radius 1.5s ease' // Transición lenta para borderRadius
+            transition: 'border-radius 0.8s ease' 
           }}
         >
           <div className="absolute inset-0 flex items-center justify-center px-10">

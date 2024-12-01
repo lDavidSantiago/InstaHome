@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { IoMdClose } from "react-icons/io";
+import images from "/src/assets/images/backgroundRegister.jpg";
 
 const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
   const [formData, setFormData] = useState({
@@ -57,70 +57,91 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-600 hover:text-red-600"
-        >
-          <IoMdClose size={24} />
-        </button>
-        <h2 className="text-2xl font-bold text-center mb-4">Registrar un Hogar</h2>
-        {message && <p className="text-center text-green-500 mb-4">{message}</p>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Descripción</label>
-            <textarea
-              name="descripcion"
-              value={formData.descripcion}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-lg"
-              required
-            />
+    <div className="w-full h-screen flex items-start">
+      <div className="relative w-1/2 h-full flex flex-col">
+        <img src={images} alt="background" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black opacity-50">
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Dirección</label>
-            <input
-              type="text"
-              name="direccion"
-              value={formData.direccion}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-lg"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Precio</label>
-            <input
-              type="number"
-              name="precio"
-              value={formData.precio}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-lg"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Imagen (URL)</label>
-            <input
-              type="url"
-              name="img"
-              value={formData.img}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-lg"
-              required
-            />
-          </div>
+          <div className="absolute top-[20%] left-[10%] flex flex-col">
+            <h1 className="text-4xl text-white font-bold my-4">Success begins with a determined step!</h1>
+            <p className="text-xl text-white font-normal">Make your apartment reach the ideal people!</p>
+        </div>      
+      </div>
+      <div className= "w-1/2 h-full bg-white flex flex-col p-20 !p-0justify-between">
+        <h1 className= "text-2xl font-semibold mb-10">Registrar Un Hogar</h1>
+        {message && (
+          <p className={`mb-2 text-center ${message.includes("éxito") ? "text-green-600" : "text-red-600"}`}>
+            {message}
+          </p>
+        )}
+      <form onSubmit={handleSubmit} >
+      <div className="w-full flex flex-col mt-2">
+        <label htmlFor="descripcion" className="text-lg font-medium text-gray-700 mb-2">
+          Descripción
+        </label>
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          value={formData.descripcion}
+          onChange={handleChange}
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          rows="3"
+          required
+        ></textarea>
+      </div>
+
+      <div className="w-full flex flex-col mt-4">
+        <label htmlFor="direccion" className="text-lg font-medium text-gray-700 mb-2">
+          Dirección
+        </label>
+        <input
+          type="text"
+          id="direccion"
+          name="direccion"
+          value={formData.direccion}
+          onChange={handleChange}
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          required
+        />
+      </div>
+      <div className="w-full flex flex-col mt-4">
+        <label htmlFor="precio" className="text-lg font-medium text-gray-700 mb-2">
+          Precio
+        </label>
+        <input
+          type="number"
+          id="precio"
+          name="precio"
+          value={formData.precio}
+          onChange={handleChange}
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          required
+        />
+      </div>
+      <div className="w-full flex flex-col mt-4">
+        <label htmlFor="img" className="text-lg font-medium text-gray-700 mb-2">
+          Imagen
+        </label>
+        <input
+          type="url"
+          id="img"
+          name="img"
+          value={formData.img}
+          onChange={handleChange}
+          className="mb-20 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          required
+        />
+      </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
             disabled={loading}
           >
             {loading ? "Registrando..." : "Registrar"}
           </button>
-        </form>
-      </div>
-    </div>
+      </form>
+      </div>   
+  </div>
   );
 };
 

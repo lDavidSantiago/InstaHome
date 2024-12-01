@@ -107,9 +107,10 @@ const HelpSection = () => {
   };
 
   return (
-    <section className="bg-gray-100 py-12 mt-8 min-h-screen flex items-start justify-center">
+    <section className="relative bg-gray-100 py-12 min-h-screen flex items-start justify-center" >
+      <div className="absolute inset-0 bg-white bg-opacity-10 "></div>
       <motion.div
-        className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg text-center p-8"
+        className="relative max-w-3xl mx-auto bg-white shadow-lg rounded-lg text-center p-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}

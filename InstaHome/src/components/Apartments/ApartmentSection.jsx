@@ -253,18 +253,12 @@ const ApartmentSection = () => {
           </h2>
 
           <div className="flex justify-between mb-6">
-            {/* Botones de filtros y registro de hogar */}
+            {/* Botones de filtros */}
             <button
               onClick={() => setIsFilterModalVisible(true)}
               className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
             >
               Filtros
-            </button>
-            <button
-              onClick={() => setIsRegisterHomeVisible(true)}
-              className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
-            >
-              Registrar Hogar
             </button>
           </div>
 
@@ -336,18 +330,6 @@ const ApartmentSection = () => {
             </div>
           </div>
         </div>
-      )}
-
-      <RegisterHome
-        isVisible={isRegisterHomeVisible}
-        onClose={() => setIsRegisterHomeVisible(false)}
-        onHomeAdded={handleHomeAdded}
-      />
-      {selectedApartment && (
-        <ApartmentModal
-          apartment={selectedApartment}
-          onClose={() => setSelectedApartment(null)}
-        />
       )}
     </>
   );
