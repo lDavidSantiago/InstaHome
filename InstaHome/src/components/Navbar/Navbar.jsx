@@ -9,6 +9,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
 
     const handleNavClick = (section) => {
         setActiveSection(section);
+        setOpen(false);
     };
 
     const handleClick = () => {
@@ -18,33 +19,58 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
     return (
         <header className="w-full shadow-md">
             {/* Sección superior */}
-            <div className="bg-sky-900 py-7 text-sm">
-                <div className="container mx-auto flex justify-between items-center px-90">
-                <div className="text-3xl font-bold text-primary cursor-pointer" onClick={() => handleNavClick('home')}>
-                    Insta<span className="text-secondary">Home</span>
-                </div>
-                    <div className="text-base text-white flex items-center space-x-6">
-                    <SiGooglemaps className="text-3xl " style={{marginLeft:"590px"}} />
-                        <div className="text-xs flex flex-col item-start">
-                            <span>Carrera 28A # 14b-16 </span>
-                            <span>Tulúa, Valle del Cauca, Colombia</span>
-                        </div>
-                        <FaPhoneAlt className="text-3xl ml-4" />
-                        <div className="text-xs flex flex-col item-start">
-                            <span>2328594</span>
-                            <span>InstaHome@gmail.com</span>
+            <div className="bg-sky-950 py-4">
+                <div className="container mx-auto grid grid-cols-1 md:grid-cols-[3.5fr_2fr_0.1fr] items-center px-4 md:px-16 gap-4 text-white">
+                    <div className="flex justify-center md:justify-start">
+                        <div
+                            className="text-3xl font-bold cursor-pointer"
+                            onClick={() => handleNavClick('home')}
+                        >
+                            Insta<span className="text-secondary">Home</span>
                         </div>
                     </div>
-                    <div className="text-sm text-white font-semibold flex flex-col space-y-2 item-start">
-                        <span>Síguenos:</span>
-                        <div className="text-2xl text-white flex space-x-2 item-start">
-                        <FaFacebook />
-                        <FaInstagram />
+                    <div className="text-center md:text-left text-sm">
+                        <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+                            <div className="flex items-center gap-2">
+                                <SiGooglemaps className="text-3xl mt-1" />
+                                <div>
+                                    <span>Carrera 28A # 14b-16</span>
+                                    <br />
+                                    <span className="text-gray-300">Tulúa, Valle del Cauca, Colombia</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <FaPhoneAlt className="text-2xl mt-1" />
+                                <div>
+                                    <span>2328594</span>
+                                    <br />
+                                    <span className="text-gray-300">InstaHome@gmail.com</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <div className="flex flex-col items-center md:items-end justify-center md:justify-end mt-4 md:mt-0">
+                        <p className="font-semibold mb-2 text-center md:text-right">Síguenos:</p>
+                        <div className="flex space-x-4">
+                            <a 
+                                href="https://www.instagram.com/inst4_home/" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                            >
+                                <FaInstagram className="text-2xl cursor-pointer" />
+                            </a>
+                            <a 
+                                href="https://www.facebook.com" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                            >
+                                <FaFacebook className="text-2xl cursor-pointer" />
+                            </a>
+                        </div>
                     </div>
-
                 </div>
             </div>
+
 
         <nav className="container mx-auto flex items-center justify-between py-2 px-8">
             {/* Contenedor del menú de navegación centrado */}

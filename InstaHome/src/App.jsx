@@ -8,8 +8,7 @@ import Help from './components/Help/Help';
 import Profile from './components/Profile/Profile'; // Importar el nuevo componente Profile
 import { logout } from './Firebase/Firebase'; // Importar la función de logout
 import RegisterHome from "./Firebase/RegisterHome";
-
-// Importa el componente Start
+import Footer from './components/Footer/Footer';
 import Start from './components/Start/Start';
 
 import './index.css';
@@ -18,14 +17,13 @@ function App() {
     const [activeSection, setActiveSection] = useState('home');
     const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para saber si el usuario está logueado
 
-    // Maneja el cambio de la sección activa
-    const handleNavClick = (section) => {
-        setActiveSection(section); // Cambia la sección activa cuando se hace clic
-    };
-
     const handleLoginSuccess = () => {
         setIsLoggedIn(true); // Cuando el login sea exitoso
         setActiveSection('home'); // Cambiar a la sección home
+    };
+
+    const handleNavClick = (section) => {
+        setActiveSection(section); // Cambia la sección activa cuando se hace clic
     };
 
     const handleShowLogin = () => {
@@ -65,12 +63,13 @@ function App() {
                     {activeSection === 'profile' && <Profile />}
                     {activeSection === "RegisterHome" && (
                         <RegisterHome
-                            isVisible={true}
-                            onClose={() => setActiveSection("home")} // Regresar a Home después del cierre
+                        isVisible={true}
+                        onClose={() => setActiveSection("home")} // Regresar a Home después del cierre
                         />
-                    )}
+                     )}
                 </>
             )}
+            <Footer setActiveSection={setActiveSection} />
         </div>
     );
 }
