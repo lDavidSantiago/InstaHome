@@ -35,9 +35,9 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                 </div>
             </div>
 
-        <nav className="bg-white shadow-lg py-2 ">
+        <nav className="bg-white shadow-lg py-2">
             <div className="container mx-auto flex justify-between items-center px-80">
-                <ul className="flex space-x-8">
+                <ul className="flex space-x-8 justify-center">
                     <li>
                         <a
                             href="#"

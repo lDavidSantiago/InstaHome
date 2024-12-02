@@ -264,22 +264,23 @@ const ApartmentSection = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Mapeo de apartamentos */}
-            {apartments.map((apartment) => (
-              <div
-                key={apartment.id}
-                className="bg-white rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-xl transform hover:scale-105 transition"
-                onClick={() => setSelectedApartment(apartment)} // Abrir modal al hacer clic
-              >
-                <img
-                  src={apartment.img}
-                  alt="Imagen del apartamento"
-                  className="w-full h-48 object-cover rounded-t-lg"
-                />
-                <h3 className="text-xl font-bold mt-4">{apartment.direccion}</h3>
-                <p className="text-gray-600">{apartment.descripcion}</p>
-                <p className="text-blue-500 font-bold mt-2">{apartment.precio}</p>
-              </div>
-            ))}
+            {apartments.map((apartment, index) => (
+                    <div
+                      key={apartment.id}
+                      className="bg-white rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-xl transform hover:scale-105 transition animate-fade-in-up opacity-0"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                      onClick={() => setSelectedApartment(apartment)}
+                    >
+                      <img
+                        src={apartment.img}
+                        alt="Imagen del apartamento"
+                        className="w-full h-48 object-cover rounded-t-lg"
+                      />
+                      <h3 className="text-xl font-bold mt-4">{apartment.direccion}</h3>
+                      <p className="text-gray-600">{apartment.descripcion}</p>
+                      <p className="text-blue-500 font-bold mt-2">{apartment.precio}</p>
+                    </div>
+                  ))}
           </div>
         </div>
       </motion.section>
