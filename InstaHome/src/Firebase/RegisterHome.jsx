@@ -67,7 +67,7 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
             <p className="text-xl text-white font-normal">Make your apartment reach the ideal people!</p>
         </div>      
       </div>
-      <div className= "w-1/2 h-full bg-white flex flex-col p-20 !p-0justify-between">
+      <div className= "w-1/2 h-full bg-slate-50 flex flex-col p-20 !p-0justify-between">
         <h1 className= "text-2xl font-semibold mb-10">Registrar Un Hogar</h1>
         {message && (
           <p className={`mb-2 text-center ${message.includes("éxito") ? "text-green-600" : "text-red-600"}`}>

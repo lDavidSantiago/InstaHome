@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaFacebook } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import { SiGooglemaps } from "react-icons/si";
+import { FaPhoneAlt } from "react-icons/fa";
 
 const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
     const [open, setOpen] = useState(false);
@@ -17,25 +18,35 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
     return (
         <header className="w-full shadow-md">
             {/* Sección superior */}
-            <div className="bg-sky-900 py-10 text-sm">
-                <div className="container mx-auto flex justify-between items-center px-80">
-                <div className="text-2xl font-bold text-primary cursor-pointer" onClick={() => handleNavClick('home')}>
+            <div className="bg-sky-900 py-7 text-sm">
+                <div className="container mx-auto flex justify-between items-center px-90">
+                <div className="text-3xl font-bold text-primary cursor-pointer" onClick={() => handleNavClick('home')}>
                     Insta<span className="text-secondary">Home</span>
                 </div>
-                    <div className="text-white flex items-center space-x-4">
-                        <span>📞 6022250253</span>
-                        <span>📧 InstaHome@gmail.com</span>
-                        <SiGooglemaps />
-                        <span>Tulúa, Valle del Cauca, Colombia</span>
+                    <div className="text-base text-white flex items-center space-x-6">
+                    <SiGooglemaps className="text-3xl " style={{marginLeft:"590px"}} />
+                        <div className="text-xs flex flex-col item-start">
+                            <span>Carrera 28A # 14b-16 </span>
+                            <span>Tulúa, Valle del Cauca, Colombia</span>
+                        </div>
+                        <FaPhoneAlt className="text-3xl ml-4" />
+                        <div className="text-xs flex flex-col item-start">
+                            <span>2328594</span>
+                            <span>InstaHome@gmail.com</span>
+                        </div>
                     </div>
-                    <div className="text-2xl text-white flex space-x-4">
+                    <div className="text-sm text-white font-semibold flex flex-col space-y-2 item-start">
+                        <span>Síguenos:</span>
+                        <div className="text-2xl text-white flex space-x-2 item-start">
                         <FaFacebook />
                         <FaInstagram />
                     </div>
+                    </div>
+
                 </div>
             </div>
 
-        <nav className="container mx-auto flex items-center justify-between px-8">
+        <nav className="container mx-auto flex items-center justify-between py-2 px-8">
             {/* Contenedor del menú de navegación centrado */}
             <ul className="flex space-x-8 justify-center mx-auto">
                 {['home', 'howItWorks', 'help'].map((section) => (
@@ -43,7 +54,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                     <a
                     href="#"
                     onClick={() => handleNavClick(section)}
-                    className="inline-block py-2 px-3 text-gray-600 font-semibold transition duration-300 hover:text-primary hover:border-b-2 hover:border-primary"
+                    className="inline-block py-2 px-3 text-gray-600 font-bold transition duration-300 hover:text-primary hover:border-b-2 hover:border-primary"
                     >
                     {section.charAt(0).toUpperCase() + section.slice(1).replace(/([A-Z])/g, ' $1')}
                     </a>
@@ -103,7 +114,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                 ) : (
                 <button
                     onClick={onLoginClick}
-                    className="bg-primary text-white font-semibold py-2 px-4 rounded hover:bg-secondary transition duration-300"
+                    className="bg-sky-900 text-white font-semibold py-2 px-4 rounded hover:bg-secondary transition duration-300"
                 >
                     Login
                 </button>
