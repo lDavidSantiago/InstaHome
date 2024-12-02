@@ -52,8 +52,9 @@ function App() {
                     {activeSection === 'home' && (
                         <>
                             <Start 
-                                setActiveSection={setActiveSection} 
+                                handleNavClick={handleNavClick}
                                 onLoginClick={handleShowLogin} 
+                                isLoggedIn={isLoggedIn} // Pasar el estado de autenticación a Start
                             /> 
                             <ApartmentSection />
                         </>

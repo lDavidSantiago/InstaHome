@@ -2,7 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import imagenStart from '/src/assets/images/imagenStart.jpg';
 
-const Start = ({ onLoginClick }) => {
+const Start = ({ onLoginClick,isLoggedIn,handleNavClick }) => {
+ 
+
+
   const fadeInVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 1, delay: 0.2 } },
@@ -45,9 +48,15 @@ const Start = ({ onLoginClick }) => {
             ...fadeInVariants,
             visible: { ...fadeInVariants.visible, transition: { duration: 1, delay: 0.6 } },
         }}
-        onClick={onLoginClick}
+            // Si el usuario está logueado, redirige a la sección de publicar hogar
+            // Si no, muestra la sección de login
         >
-          Publica tu hogar
+          
+          {isLoggedIn ? (
+            <span onClick={() => handleNavClick('RegisterHome')}>Publicar hogar</span>
+          ) : (
+            <span onClick={onLoginClick}>Inicia sesión</span>
+          )}
         </motion.button>
       </div>
     </div>
