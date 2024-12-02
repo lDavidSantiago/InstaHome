@@ -9,11 +9,19 @@ import Profile from './components/Profile/Profile'; // Importar el nuevo compone
 import { logout } from './Firebase/Firebase'; // Importar la función de logout
 import RegisterHome from "./Firebase/RegisterHome";
 
-import './App.css';
+// Importa el componente Start
+import Start from './components/Start/Start';
+
+import './index.css';
 
 function App() {
     const [activeSection, setActiveSection] = useState('home');
     const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para saber si el usuario está logueado
+
+    // Maneja el cambio de la sección activa
+    const handleNavClick = (section) => {
+        setActiveSection(section); // Cambia la sección activa cuando se hace clic
+    };
 
     const handleLoginSuccess = () => {
         setIsLoggedIn(true); // Cuando el login sea exitoso
@@ -36,22 +44,31 @@ function App() {
                 setActiveSection={setActiveSection} 
                 onLoginClick={handleShowLogin} 
                 onLogout={handleLogout}
+                handleNavClick={handleNavClick} // Pasar handleNavClick al Navbar
                 isLoggedIn={isLoggedIn} // Pasar el estado de autenticación al Navbar
             />
             {activeSection === 'login' ? (
                 <LoginTab onLoginSuccess={handleLoginSuccess} />
             ) : (
                 <>
-                    {activeSection === 'home' && <ApartmentSection />}
+                    {activeSection === 'home' && (
+                        <>
+                            <Start 
+                                setActiveSection={setActiveSection} 
+                                onLoginClick={handleShowLogin} 
+                            /> 
+                            <ApartmentSection />
+                        </>
+                    )}
                     {activeSection === 'howItWorks' && <HowItWorks />}
                     {activeSection === 'help' && <Help />}
                     {activeSection === 'profile' && <Profile />}
                     {activeSection === "RegisterHome" && (
                         <RegisterHome
-                        isVisible={true}
-                        onClose={() => setActiveSection("home")} // Regresar a Home después del cierre
+                            isVisible={true}
+                            onClose={() => setActiveSection("home")} // Regresar a Home después del cierre
                         />
-                     )}
+                    )}
                 </>
             )}
         </div>

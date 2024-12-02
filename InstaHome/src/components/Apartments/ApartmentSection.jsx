@@ -4,7 +4,16 @@ import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { motion } from "framer-motion";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
+import imagenStart from '/src/assets/images/imagenStart.jpg';
 import jsPDF from "jspdf";
+import Start from "../Start/Start";
+
+
+
+const fadeInVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1, delay: 0.2 } },
+};
 
 const ApartmentModal = ({ apartment, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -149,7 +158,7 @@ const ApartmentModal = ({ apartment, onClose }) => {
   );
 };
 
-const ApartmentSection = () => {
+const ApartmentSection = ({setActiveSection}) => {
   const [isRegisterHomeVisible, setIsRegisterHomeVisible] = useState(false);
   const [apartments, setApartments] = useState([]);
   const [allApartments, setAllApartments] = useState([]); // Guardar todos los apartamentos para restaurar
