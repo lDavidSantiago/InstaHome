@@ -60,7 +60,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                                 <FaInstagram className="text-2xl cursor-pointer" />
                             </a>
                             <a 
-                                href="https://www.facebook.com" 
+                                href="https://www.facebook.com/profile.php?id=61569414017866" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                             >
@@ -118,21 +118,28 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                         onClick={() => handleNavClick('profile')}
                         >
-                        Profile
+                        Perfil
                         </a>
                         <a
                         href="#"
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                         onClick={() => handleNavClick('RegisterHome')}
                         >
-                        RegisterHome
+                        Registrar Hogar
+                        </a>
+                        <a
+                        href="#"
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        /*onClick*/
+                        >
+                        Favoritos
                         </a>
                         <a
                         href="#"
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                         onClick={onLogout}
                         >
-                        Logout
+                        Cerrar sesión
                         </a>
                     </div>
                     )}
@@ -142,7 +149,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                     onClick={onLoginClick}
                     className="bg-sky-900 text-white font-semibold py-2 px-4 rounded hover:bg-secondary transition duration-300"
                 >
-                    Login
+                    Iniciar Sesión
                 </button>
                 )}
             </div>

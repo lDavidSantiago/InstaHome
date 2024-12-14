@@ -38,7 +38,7 @@ const Footer = ({setActiveSection}) => {
                             <FaInstagram className="text-2xl cursor-pointer" />
                         </a>
                         <a 
-                            href="https://www.facebook.com" 
+                            href="https://www.facebook.com/profile.php?id=61569414017866" 
                             target="_blank" 
                             rel="noopener noreferrer"
                         >

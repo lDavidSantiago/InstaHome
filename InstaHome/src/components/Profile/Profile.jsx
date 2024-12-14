@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { motion } from "framer-motion";
 
 function UserProfile() {
   const [user, setUser] = useState(null);
@@ -31,7 +32,7 @@ function UserProfile() {
             cedula: data.cedula || "",
             stars: data.stars || 0,
           });
-          setEditableCedula(!data.cedula); // La cédula será editable solo si no existe
+          setEditableCedula(!data.cedula);
         } else {
           console.error("No se encontraron datos del usuario.");
         }
@@ -52,13 +53,21 @@ function UserProfile() {
     }));
   };
 
+  const handleStarClick = (index) => {
+    setForm((prevForm) => ({
+      ...prevForm,
+      stars: index + 1, // Índice base 0 -> número de estrellas seleccionadas
+    }));
+  };
+
   const handleSave = async () => {
     try {
       const userDocRef = doc(db, "users", user.uid);
       await updateDoc(userDocRef, {
         phone: form.phone,
         description: form.description,
-        cedula: editableCedula ? form.cedula : user.cedula, // Solo actualiza la cédula si es editable
+        cedula: editableCedula ? form.cedula : user.cedula,
+        stars: form.stars,
       });
 
       setUser((prevUser) => ({
@@ -66,8 +75,9 @@ function UserProfile() {
         phone: form.phone,
         description: form.description,
         cedula: editableCedula ? form.cedula : prevUser.cedula,
+        stars: form.stars,
       }));
-      setEditableCedula(false); // Bloquea la edición de la cédula después de guardar
+      setEditableCedula(false);
       alert("Información actualizada exitosamente.");
     } catch (error) {
       console.error("Error al guardar los cambios:", error.message);
@@ -75,121 +85,106 @@ function UserProfile() {
   };
 
   if (isLoading) {
-    return <div>Cargando...</div>;
+    return <div className="text-center text-lg mt-10">Cargando...</div>;
   }
 
   if (!user) {
-    return <div>No has iniciado sesión. Por favor, inicia sesión.</div>;
+    return <div className="text-center text-lg mt-10">Por favor, inicia sesión.</div>;
   }
 
   return (
-    <div style={styles.container}>
-      {/* Ícono del perfil */}
-      <div style={styles.profileIcon}>
+    <motion.div
+      className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mt-10"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      {/* Profile Icon */}
+      <motion.div
+        className="flex justify-center mb-6"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
         <img
-          src="https://via.placeholder.com/100" // Reemplaza con un URL de ícono real si tienes
-          alt="Ícono de perfil"
-          style={styles.iconImage}
+          src="https://via.placeholder.com/100"
+          alt="Profile Icon"
+          className="w-24 h-24 rounded-full border-4 border-blue-500 shadow-md"
         />
+      </motion.div>
+
+      <h1 className="text-center text-2xl font-bold text-gray-800 mb-2">{user.name || "Usuario"}</h1>
+      <p className="text-center text-gray-600 mb-4">{user.email || "Correo no disponible"}</p>
+
+       {/* Calificación con estrellas */}
+       <div className="flex justify-center space-x-1 my-4">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <motion.span
+              key={index}
+              className={`text-2xl cursor-pointer ${
+                index < form.stars ? "text-yellow-400" : "text-gray-300"
+              }`}
+              whileHover={{ scale: 1.2 }}
+              onClick={() => handleStarClick(index)}
+            >
+              ★
+            </motion.span>
+          ))}
       </div>
-      {/* Datos del usuario */}
-      <h1 style={styles.name}>{user.name}</h1>
-      <p style={styles.email}>Correo: {user.email}</p>
-      {/* Calificación con estrellas */}
-      <div style={styles.stars}>
-        {Array.from({ length: 5 }).map((_, index) => (
-          <span
-            key={index}
-            style={{
-              color: index < form.stars ? "#FFD700" : "#CCC",
-              fontSize: "24px",
-            }}
-          >
-            ★
-          </span>
-        ))}
+
+      {/* Form */}
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Teléfono:</label>
+          <input
+            type="text"
+            name="phone"
+            value={form.phone}
+            onChange={handleInputChange}
+            className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Descripción:</label>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleInputChange}
+            className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Cédula:</label>
+          <input
+            type="text"
+            name="cedula"
+            value={form.cedula}
+            onChange={handleInputChange}
+            className={`w-full mt-1 p-2 border ${
+              editableCedula ? "border-gray-300" : "border-gray-200 bg-gray-100"
+            } rounded-md focus:ring-blue-500 focus:border-blue-500`}
+            disabled={!editableCedula}
+          />
+        </div>
       </div>
-      {/* Formulario para actualizar datos */}
-      <form style={styles.form}>
-        {/* Teléfono */}
-        <label>Teléfono:</label>
-        <input
-          type="text"
-          name="phone"
-          value={form.phone}
-          onChange={handleInputChange}
-          placeholder="Ingresa tu número de teléfono"
-        />
-        {/* Descripción */}
-        <label>Descripción:</label>
-        <textarea
-          name="description"
-          value={form.description}
-          onChange={handleInputChange}
-          placeholder="Escribe una breve descripción"
-        />
-        {/* Cédula */}
-        <label>Cédula:</label>
-        <input
-          type="text"
-          name="cedula"
-          value={form.cedula}
-          onChange={handleInputChange}
-          placeholder="Ingresa tu cédula"
-          disabled={!editableCedula}
-        />
-      </form>
-      <button onClick={handleSave} style={styles.saveButton}>
+
+      {/* Save Button */}
+      <motion.button
+        onClick={handleSave}
+        className="mt-6 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
         Guardar Cambios
-      </button>
-    </div>
+      </motion.button>
+
+      {/* SECCION DE FAVORITOS */}
+
+    </motion.div>
   );
 }
-
-const styles = {
-  container: {
-    textAlign: "center",
-    margin: "20px auto",
-    padding: "20px",
-    maxWidth: "400px",
-    border: "1px solid #CCC",
-    borderRadius: "10px",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  profileIcon: {
-    marginBottom: "15px",
-  },
-  iconImage: {
-    borderRadius: "50%",
-    width: "100px",
-    height: "100px",
-    objectFit: "cover",
-  },
-  name: {
-    fontSize: "20px",
-    marginBottom: "10px",
-  },
-  email: {
-    fontSize: "16px",
-    color: "#555",
-  },
-  stars: {
-    margin: "10px 0",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-  saveButton: {
-    marginTop: "20px",
-    padding: "10px",
-    backgroundColor: "#007BFF",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-  },
-};
 
 export default UserProfile;

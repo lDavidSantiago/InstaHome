@@ -4,6 +4,7 @@ import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { motion } from "framer-motion";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
+import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
 import imagenStart from '/src/assets/images/imagenStart.jpg';
 import jsPDF from "jspdf";
 import Start from "../Start/Start";
@@ -18,6 +19,15 @@ const fadeInVariants = {
 const ApartmentModal = ({ apartment, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [contractGenerated, setContractGenerated] = useState(false);
+  const [favorites, setFavorites] = useState({});
+
+  const handleToggleFavorite = (apartmentId) => {
+    // Cambiar el estado de favorito solo para el apartamento actual
+    setFavorites(prevFavorites => ({
+      ...prevFavorites,
+      [apartmentId]: !prevFavorites[apartmentId], // Invertir el estado del favorito
+    }));
+  };
 
   useEffect(() => {
     setCurrentImageIndex(0);
@@ -119,6 +129,7 @@ const ApartmentModal = ({ apartment, onClose }) => {
             alt={apartment.direccion}
             className="w-full h-80 object-cover rounded-l-lg"
           />
+    
           <button
             onClick={handleNextImage}
             className="absolute right-2 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75"
@@ -127,7 +138,16 @@ const ApartmentModal = ({ apartment, onClose }) => {
           </button>
         </div>
         <div className="w-2/5 p-6">
-          <h3 className="text-2xl font-bold mb-4">{apartment.direccion}</h3>
+        <h3 className="text-2xl font-bold mb-4">{apartment.direccion}</h3>
+          
+          {/* Corazón vacío o lleno dependiendo del estado para ese apartamento */}
+          <span onClick={() => handleToggleFavorite(apartment.id)} className="cursor-pointer">
+            {favorites[apartment.id] ? (
+              <IoMdHeart size={24} className="text-red-500" /> // Corazón lleno
+            ) : (
+              <IoMdHeartEmpty size={24} className="text-red-500" /> // Corazón vacío
+            )}
+          </span>
           <p className="text-gray-700 text-lg mb-4">{apartment.descripcion}</p>
           <div className="space-y-2 text-gray-600">
             <p>
@@ -265,7 +285,7 @@ const ApartmentSection = ({setActiveSection}) => {
             {/* Botones de filtros */}
             <button
               onClick={() => setIsFilterModalVisible(true)}
-              className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
+              className="bg-sky-900 text-white py-2 px-4 rounded-lg hover:bg-secondary transition ease-in-out duration-300"
             >
               Filtros
             </button>
@@ -333,7 +353,7 @@ const ApartmentSection = ({setActiveSection}) => {
               </button>
               <button
                 onClick={applyFilters}
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                className="bg-sky-900 text-white py-2 px-4 rounded-lg hover:bg-secondary transition ease-in-out duration-300"
               >
                 Aplicar Filtros
               </button>
