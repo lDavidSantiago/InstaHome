@@ -84,18 +84,14 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
   return (
     <div className="w-full min-h-[90vh] flex flex-col sm:flex-row">
       {/* Sección izquierda */}
-      <div className="relative w-full sm:w-1/2 flex-shrink-0 flex flex-col">
-        <img
-          src={images}
-          alt="background"
-          className="w-full h-64 sm:h-auto object-cover"
-        />
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="absolute top-[20%] left-[10%] flex flex-col">
-          <h1 className="text-2xl sm:text-4xl text-white font-bold my-4">
+      <div className="relative w-full sm:w-1/2 h-[300px] sm:h-auto flex-shrink-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${images})` }}>
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+        <div className="absolute top-[15%] left-[5%] sm:top-[25%] sm:left-[10%] text-center sm:text-left px-4 sm:px-0">
+          <h1 className="text-lg sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold leading-snug drop-shadow-md">
             Success begins with a determined step!
           </h1>
-          <p className="text-base sm:text-xl text-white font-normal">
+          <p className="text-sm sm:text-lg md:text-xl text-white leading-normal mt-2 drop-shadow-md">
             Make your apartment reach the ideal people!
           </p>
         </div>
