@@ -9,8 +9,6 @@ import imagenStart from '/src/assets/images/imagenStart.jpg';
 import jsPDF from "jspdf";
 import Start from "../Start/Start";
 
-
-
 const fadeInVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 1, delay: 0.2 } },
@@ -22,10 +20,9 @@ const ApartmentModal = ({ apartment, onClose }) => {
   const [favorites, setFavorites] = useState({});
 
   const handleToggleFavorite = (apartmentId) => {
-    // Cambiar el estado de favorito solo para el apartamento actual
     setFavorites(prevFavorites => ({
       ...prevFavorites,
-      [apartmentId]: !prevFavorites[apartmentId], // Invertir el estado del favorito
+      [apartmentId]: !prevFavorites[apartmentId],
     }));
   };
 
@@ -51,63 +48,54 @@ const ApartmentModal = ({ apartment, onClose }) => {
 
   const generateContract = () => {
     const doc = new jsPDF();
-    doc.setFont("helvetica", "normal");
-  
-    // Título del contrato
-    doc.setFontSize(18);
-    doc.text("CONTRATO DE ARRENDAMIENTO", 20, 20);
-    doc.setFontSize(12);
-    
-    // Información sobre el apartamento
-    doc.text(`Apartamento: ${apartment.direccion}`, 20, 30);
-    doc.text(`Descripción: ${apartment.descripcion}`, 20, 40);
-    doc.text(`Precio de arrendamiento: ${apartment.precio}`, 20, 50);
-    doc.text(`Habitaciones: ${apartment.bedrooms}`, 20, 60);
-    doc.text(`Baños: ${apartment.bathrooms}`, 20, 70);
-    doc.text(`Metros cuadrados: ${apartment.m2} m²`, 20, 80);
-    
-    doc.text("------------------------------------------------------------------------", 20, 90);
-  
-    // Detalles de los arrendadores e inquilinos
-    doc.text("Partes del contrato:", 20, 100);
-    doc.text("Arrendador: ___________________________", 20, 110);
-    doc.text("Inquilino: ___________________________", 20, 120);
-  
-    // Detalles de la duración y condiciones
-    doc.text("Duración del contrato:", 20, 130);
-    doc.text("La duración del contrato es de 12 meses, comenzando desde la firma del contrato.", 20, 140);
-  
-    // Condiciones de pago
-    doc.text("Condiciones de pago:", 20, 150);
+    doc.setFont("times", "normal");
+
+    doc.setFontSize(22);
+    doc.text("CONTRATO DE ARRENDAMIENTO", 105, 20, null, null, "center");
+    doc.setFontSize(14);
+
+    doc.text(`Apartamento: ${apartment.direccion}`, 20, 40);
+    doc.text(`Descripción: ${apartment.descripcion}`, 20, 50);
+    doc.text(`Precio de arrendamiento: ${apartment.precio}`, 20, 60);
+    doc.text(`Habitaciones: ${apartment.bedrooms}`, 20, 70);
+    doc.text(`Baños: ${apartment.bathrooms}`, 20, 80);
+    doc.text(`Metros cuadrados: ${apartment.m2} m²`, 20, 90);
+
+    doc.text("------------------------------------------------------------------------", 20, 100);
+
+    doc.text("Partes del contrato:", 20, 110);
+    doc.text("Arrendador: ___________________________", 20, 120);
+    doc.text("Inquilino: ___________________________", 20, 130);
+
+    doc.text("Duración del contrato:", 20, 140);
+    doc.text("La duración del contrato es de 12 meses, comenzando desde la firma del contrato.", 20, 150);
+
+    doc.text("Condiciones de pago:", 20, 160);
     doc.text(
       `El precio de arrendamiento mensual es de ${apartment.precio}. El pago se realizará el primer día de cada mes a través de transferencia bancaria.`,
       20,
-      160
+      170
     );
-  
-    // Obligaciones de las partes
-    doc.text("Obligaciones del arrendador:", 20, 170);
-    doc.text("- Entregar el apartamento en condiciones habitables.", 20, 180);
-    doc.text("- Mantener el apartamento libre de vicios o defectos.", 20, 190);
-    
-    doc.text("Obligaciones del inquilino:", 20, 200);
-    doc.text("- Pagar el arrendamiento en tiempo y forma.", 20, 210);
-    doc.text("- No subarrendar el apartamento sin consentimiento del arrendador.", 20, 220);
-  
-    // Firma
-    doc.text("Firmas:", 20, 230);
-    doc.text("Arrendador: ___________________________", 20, 240);
-    doc.text("Inquilino: ___________________________", 20, 250);
-  
-    // Fecha y lugar
-    doc.text(`Fecha: ___________________________`, 20, 260);
-    doc.text(`Lugar: ___________________________`, 20, 270);
-  
-    // Guardar el contrato como archivo PDF
+
+    doc.text("Obligaciones del arrendador:", 20, 180);
+    doc.text("- Entregar el apartamento en condiciones habitables.", 20, 190);
+    doc.text("- Mantener el apartamento libre de vicios o defectos.", 20, 200);
+
+    doc.text("Obligaciones del inquilino:", 20, 210);
+    doc.text("- Pagar el arrendamiento en tiempo y forma.", 20, 220);
+    doc.text("- No subarrendar el apartamento sin consentimiento del arrendador.", 20, 230);
+
+    doc.text("Firmas:", 20, 240);
+    doc.text("Arrendador: ___________________________", 20, 250);
+    doc.text("Inquilino: ___________________________", 20, 260);
+
+    doc.text(`Fecha: ___________________________`, 20, 270);
+    doc.text(`Lugar: ___________________________`, 20, 280);
+
     doc.save(`Contrato_Arrendamiento_${apartment.direccion}.pdf`);
-    setContractGenerated(true);  // Marcar el contrato como generado
+    setContractGenerated(true);
   };
-  
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
       <div className="relative bg-white rounded-lg p-6 shadow-lg w-full max-w-4xl flex">
@@ -129,7 +117,7 @@ const ApartmentModal = ({ apartment, onClose }) => {
             alt={apartment.direccion}
             className="w-full h-80 object-cover rounded-l-lg"
           />
-    
+
           <button
             onClick={handleNextImage}
             className="absolute right-2 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75"
@@ -138,14 +126,18 @@ const ApartmentModal = ({ apartment, onClose }) => {
           </button>
         </div>
         <div className="w-2/5 p-6">
-        <h3 className="text-2xl font-bold mb-4">{apartment.direccion}</h3>
-          
-          {/* Corazón vacío o lleno dependiendo del estado para ese apartamento */}
+          <h3 className="text-2xl font-bold mb-4">{apartment.direccion}</h3>
           <span onClick={() => handleToggleFavorite(apartment.id)} className="cursor-pointer">
             {favorites[apartment.id] ? (
-              <IoMdHeart size={24} className="text-red-500" /> // Corazón lleno
+              <div className="flex space-x-2 text-red-500">
+                <IoMdHeart size={24} className="text-red-500 " />
+                <p>Agregado a favoritos!</p>
+              </div>
             ) : (
-              <IoMdHeartEmpty size={24} className="text-red-500" /> // Corazón vacío
+              <div className="flex space-x-2 text-grey-400">
+                <IoMdHeartEmpty size={24} className="text-red-500" />
+                <p>Agregar a favoritos</p>
+              </div>
             )}
           </span>
           <p className="text-gray-700 text-lg mb-4">{apartment.descripcion}</p>
@@ -163,7 +155,7 @@ const ApartmentModal = ({ apartment, onClose }) => {
           <p className="text-xl font-semibold text-[#1E90FF] mt-6">
             {apartment.precio}
           </p>
-          <button 
+          <button
             className="mt-4 bg-[#1E90FF] text-white px-4 py-2 rounded-lg hover:bg-[#007acc] hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-out cursor-pointer"
             onClick={generateContract}
           >
@@ -178,13 +170,12 @@ const ApartmentModal = ({ apartment, onClose }) => {
   );
 };
 
-const ApartmentSection = ({setActiveSection}) => {
+const ApartmentSection = ({ setActiveSection }) => {
   const [isRegisterHomeVisible, setIsRegisterHomeVisible] = useState(false);
   const [apartments, setApartments] = useState([]);
-  const [allApartments, setAllApartments] = useState([]); // Guardar todos los apartamentos para restaurar
+  const [allApartments, setAllApartments] = useState([]);
   const [filters, setFilters] = useState({ minPrice: "", maxPrice: "", location: "" });
-  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
-  const [selectedApartment, setSelectedApartment] = useState(null); // Estado para el modal de apartamento
+  const [selectedApartment, setSelectedApartment] = useState(null);
   const db = getFirestore();
 
   useEffect(() => {
@@ -196,7 +187,7 @@ const ApartmentSection = ({setActiveSection}) => {
           ...doc.data(),
         }));
         setApartments(apartmentsData);
-        setAllApartments(apartmentsData); // Guardar la lista completa
+        setAllApartments(apartmentsData);
       } catch (error) {
         console.error("Error al cargar apartamentos:", error);
       }
@@ -221,13 +212,12 @@ const ApartmentSection = ({setActiveSection}) => {
       },
     ];
     setApartments(newApartmentsList);
-    setAllApartments(newApartmentsList); // Mantener todos los apartamentos actualizados
+    setAllApartments(newApartmentsList);
   };
 
   const applyFilters = () => {
-    let filteredApartments = allApartments; // Usar todos los apartamentos almacenados
+    let filteredApartments = allApartments;
 
-    // Filtrar por precio mínimo si se proporciona
     if (filters.minPrice) {
       const min = parseInt(filters.minPrice) || 0;
       filteredApartments = filteredApartments.filter((apartment) => {
@@ -236,7 +226,6 @@ const ApartmentSection = ({setActiveSection}) => {
       });
     }
 
-    // Filtrar por precio máximo si se proporciona
     if (filters.maxPrice) {
       const max = parseInt(filters.maxPrice) || Infinity;
       filteredApartments = filteredApartments.filter((apartment) => {
@@ -245,21 +234,18 @@ const ApartmentSection = ({setActiveSection}) => {
       });
     }
 
-    // Filtrar por ubicación si se proporciona
     if (filters.location) {
       filteredApartments = filteredApartments.filter((apartment) =>
         apartment.direccion.toLowerCase().includes(filters.location.toLowerCase())
       );
     }
 
-    setApartments(filteredApartments); // Actualizar apartamentos filtrados
-    setIsFilterModalVisible(false);
+    setApartments(filteredApartments);
   };
 
   const clearFilters = () => {
-    setFilters({ minPrice: "", maxPrice: "", location: "" }); // Limpiar filtros
-    setApartments(allApartments); // Restaurar todos los apartamentos
-    setIsFilterModalVisible(false);
+    setFilters({ minPrice: "", maxPrice: "", location: "" });
+    setApartments(allApartments);
   };
 
   const handleFilterChange = (e) => {
@@ -269,7 +255,6 @@ const ApartmentSection = ({setActiveSection}) => {
 
   return (
     <>
-      {/* Sección de apartamentos */}
       <motion.section
         className="py-12 bg-gray-100"
         initial={{ opacity: 0, y: 20 }}
@@ -277,53 +262,19 @@ const ApartmentSection = ({setActiveSection}) => {
         transition={{ duration: 0.6 }}
       >
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">
-            Available Apartments
+          <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-10">
+            Apartamentos Disponibles
           </h2>
-
+          {/*PARTE DE LOS FILTROS */}
+          <h3 className="text-2xl font-semibold text-gray-700 mb-4">Filtros</h3>
+          <hr className="mb-6 border-gray-300" />
           <div className="flex justify-between mb-6">
-            {/* Botones de filtros */}
-            <button
-              onClick={() => setIsFilterModalVisible(true)}
-              className="bg-sky-900 text-white py-2 px-4 rounded-lg hover:bg-secondary transition ease-in-out duration-300"
-            >
-              Filtros
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Mapeo de apartamentos */}
-            {apartments.map((apartment, index) => (
-                    <div
-                      key={apartment.id}
-                      className="bg-white rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-xl transform hover:scale-105 transition animate-fade-in-up opacity-0"
-                      style={{ animationDelay: `${index * 100}ms` }}
-                      onClick={() => setSelectedApartment(apartment)}
-                    >
-                      <img
-                        src={apartment.img}
-                        alt="Imagen del apartamento"
-                        className="w-full h-48 object-cover rounded-t-lg"
-                      />
-                      <h3 className="text-xl font-bold mt-4">{apartment.direccion}</h3>
-                      <p className="text-gray-600">{apartment.descripcion}</p>
-                      <p className="text-blue-500 font-bold mt-2">{apartment.precio}</p>
-                    </div>
-                  ))}
-          </div>
-        </div>
-      </motion.section>
-
-      {isFilterModalVisible && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
-            <h3 className="text-lg font-bold mb-4">Filtrar Apartamentos</h3>
-            <div className="space-y-4">
+            <div className="flex space-x-4">
               <input
                 type="number"
                 name="minPrice"
                 placeholder="Precio mínimo ($)"
-                className="w-full p-2 border rounded"
+                className="p-3 border rounded-lg"
                 value={filters.minPrice}
                 onChange={handleFilterChange}
               />
@@ -331,37 +282,56 @@ const ApartmentSection = ({setActiveSection}) => {
                 type="number"
                 name="maxPrice"
                 placeholder="Precio máximo ($)"
-                className="w-full p-2 border rounded"
+                className="p-3 border rounded-lg"
                 value={filters.maxPrice}
                 onChange={handleFilterChange}
               />
               <input
                 type="text"
                 name="location"
-                placeholder="Ciudad"
-                className="w-full p-2 border rounded"
+                placeholder="Barrio"
+                className="p-3 border rounded-lg"
                 value={filters.location}
                 onChange={handleFilterChange}
               />
-            </div>
-            <div className="flex justify-between mt-6">
-              <button
-                onClick={clearFilters}
-                className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 mr-2"
-              >
-                Limpiar Filtros
-              </button>
               <button
                 onClick={applyFilters}
-                className="bg-sky-900 text-white py-2 px-4 rounded-lg hover:bg-secondary transition ease-in-out duration-300"
+                className="bg-sky-900 text-white py-3 px-6 rounded-lg hover:bg-secondary transition ease-in-out duration-300"
               >
                 Aplicar Filtros
               </button>
+              <button
+                onClick={clearFilters}
+                className="bg-gray-500 text-white py-3 px-6 rounded-lg hover:bg-gray-600"
+              >
+                Limpiar Filtros
+              </button>
             </div>
           </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {apartments.map((apartment, index) => (
+              <div
+                key={apartment.id}
+                className="bg-white rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-xl transform hover:scale-105 transition animate-fade-in-up opacity-0"
+                style={{ animationDelay: `${index * 100}ms` }}
+                onClick={() => setSelectedApartment(apartment)}
+              >
+                <img
+                  src={apartment.img}
+                  alt="Imagen del apartamento"
+                  className="w-full h-48 object-cover rounded-t-lg"
+                />
+                <h3 className="text-xl font-bold mt-4">{apartment.direccion}</h3>
+                <p className="text-gray-600">{apartment.descripcion}</p>
+                <p className="text-blue-500 font-bold mt-2">{apartment.precio}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      )}
-        {selectedApartment && (
+      </motion.section>
+
+      {selectedApartment && (
         <ApartmentModal
           apartment={selectedApartment}
           onClose={() => setSelectedApartment(null)}

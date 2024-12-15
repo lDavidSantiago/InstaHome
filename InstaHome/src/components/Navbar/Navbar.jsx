@@ -130,13 +130,6 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                         <a
                         href="#"
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        /*onClick*/
-                        >
-                        Favoritos
-                        </a>
-                        <a
-                        href="#"
-                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                         onClick={onLogout}
                         >
                         Cerrar sesión

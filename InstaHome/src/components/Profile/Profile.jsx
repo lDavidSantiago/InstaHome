@@ -8,7 +8,7 @@ import {
   collection, 
   getDocs, 
   query, 
-  where,
+  where, 
   deleteDoc 
 } from "firebase/firestore";
 import { motion } from "framer-motion";
@@ -24,16 +24,14 @@ function UserProfile() {
     stars: 0,
   });
   const [apartments, setApartments] = useState([]);
-  
-  // New states for apartment management
-  const [selectedApartment, setSelectedApartment] = useState(null);
+  const [editingApartment, setEditingApartment] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteConfirmation, setDeleteConfirmation] = useState("");
+
   const [editApartmentForm, setEditApartmentForm] = useState({
     direccion: "",
     descripcion: "",
-    precio: ""
+    precio: "",
   });
 
   const auth = getAuth();
@@ -55,7 +53,7 @@ function UserProfile() {
             stars: data.stars || 0,
           });
           setEditableCedula(!data.cedula);
-          
+
           if (data.cedula) {
             loadApartments(data.cedula);
           }
@@ -90,6 +88,14 @@ function UserProfile() {
     }));
   };
 
+  const handleEditApartmentChange = (e) => {
+    const { name, value } = e.target;
+    setEditApartmentForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }));
+  };
+
   const handleSave = async () => {
     try {
       const userDocRef = doc(db, "users", user.uid);
@@ -114,74 +120,46 @@ function UserProfile() {
     }
   };
 
-  // New function to handle apartment selection
-  const handleApartmentSelect = (apartment) => {
-    setSelectedApartment(apartment);
+  const handleDeleteApartment = async () => {
+    try {
+      await deleteDoc(doc(db, "actuCasa", editingApartment.id));
+      setApartments((prevApartments) =>
+        prevApartments.filter((apartment) => apartment.id !== editingApartment.id)
+      );
+      setIsDeleteModalOpen(false);
+      alert("Apartamento eliminado exitosamente.");
+    } catch (error) {
+      console.error("Error al eliminar apartamento:", error.message);
+    }
   };
 
-  // Edit Apartment Modal Functions
-  const openEditModal = (apartment) => {
-    setSelectedApartment(apartment);
+  const handleEditApartment = (apartment) => {
+    setEditingApartment(apartment);
     setEditApartmentForm({
       direccion: apartment.direccion,
       descripcion: apartment.descripcion,
-      precio: apartment.precio
+      precio: apartment.precio,
     });
     setIsEditModalOpen(true);
   };
 
-  const handleEditApartmentChange = (e) => {
-    const { name, value } = e.target;
-    setEditApartmentForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
   const saveEditedApartment = async () => {
-    if (!selectedApartment) return;
-
     try {
-      const apartmentDocRef = doc(db, "actuCasa", selectedApartment.id);
+      const apartmentDocRef = doc(db, "actuCasa", editingApartment.id);
       await updateDoc(apartmentDocRef, {
         direccion: editApartmentForm.direccion,
         descripcion: editApartmentForm.descripcion,
-        precio: editApartmentForm.precio
+        precio: editApartmentForm.precio,
       });
-
-      // Refresh apartments list
-      loadApartments(user.cedula);
-      
+      setApartments((prevApartments) =>
+        prevApartments.map((apartment) =>
+          apartment.id === editingApartment.id ? { ...apartment, ...editApartmentForm } : apartment
+        )
+      );
       setIsEditModalOpen(false);
-      setSelectedApartment(null);
       alert("Apartamento actualizado exitosamente.");
     } catch (error) {
       console.error("Error al actualizar apartamento:", error.message);
-    }
-  };
-
-  // Delete Apartment Modal Functions
-  const openDeleteModal = (apartment) => {
-    setSelectedApartment(apartment);
-    setIsDeleteModalOpen(true);
-    setDeleteConfirmation("");
-  };
-
-  const deleteApartment = async () => {
-    if (deleteConfirmation !== "Confirmar" || !selectedApartment) return;
-
-    try {
-      const apartmentDocRef = doc(db, "actuCasa", selectedApartment.id);
-      await deleteDoc(apartmentDocRef);
-
-      // Refresh apartments list
-      loadApartments(user.cedula);
-      
-      setIsDeleteModalOpen(false);
-      setSelectedApartment(null);
-      alert("Apartamento eliminado exitosamente.");
-    } catch (error) {
-      console.error("Error al eliminar apartamento:", error.message);
     }
   };
 
@@ -195,150 +173,139 @@ function UserProfile() {
 
   return (
     <motion.div
-      className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mt-10"
+      className="container mx-auto p-6 mt-10 grid grid-cols-1 md:grid-cols-3 gap-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
     >
       {/* Sección del perfil */}
       <motion.div
-        className="flex justify-center mb-6"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="col-span-1 bg-white rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 p-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
       >
-        <img
-          src="https://via.placeholder.com/100"
-          alt="Profile Icon"
-          className="w-24 h-24 rounded-full border-4 border-blue-500 shadow-md"
-        />
+        <motion.div
+          className="flex justify-center mb-6"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <img
+            src="https://via.placeholder.com/100"
+            alt="Profile Icon"
+            className="w-24 h-24 rounded-full border-4 border-blue-500 shadow-md"
+          />
+        </motion.div>
+        <h1 className="text-center text-2xl font-bold text-gray-800 mb-2">
+          {user.name || "Usuario"}
+        </h1>
+        <p className="text-center text-gray-600 mb-4">
+          {user.email || "Correo no disponible"}
+        </p>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Teléfono:</label>
+            <input
+              type="text"
+              name="phone"
+              value={form.phone}
+              onChange={handleInputChange}
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Descripción:</label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleInputChange}
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Cédula:</label>
+            <input
+              type="text"
+              name="cedula"
+              value={form.cedula}
+              onChange={handleInputChange}
+              className={`w-full mt-1 p-2 border ${
+                editableCedula ? "border-gray-300" : "border-gray-200 bg-gray-100"
+              } rounded-md focus:ring-blue-500 focus:border-blue-500`}
+              disabled={!editableCedula}
+            />
+          </div>
+        </div>
+
+        <motion.button
+          onClick={handleSave}
+          className="mt-6 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Guardar Cambios
+        </motion.button>
       </motion.div>
-      <h1 className="text-center text-2xl font-bold text-gray-800 mb-2">{user.name || "Usuario"}</h1>
-      <p className="text-center text-gray-600 mb-4">{user.email || "Correo no disponible"}</p>
 
-      {/* Calificación con estrellas */}
-      <div className="flex justify-center space-x-1 my-4">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <motion.span
-            key={index}
-            className={`text-2xl cursor-pointer ${
-              index < form.stars ? "text-yellow-400" : "text-gray-300"
-            }`}
-            whileHover={{ scale: 1.2 }}
-            onClick={() => setForm((prevForm) => ({ ...prevForm, stars: index + 1 }))}
-          >
-            ★
-          </motion.span>
-        ))}
-      </div>
-
-      {/* Formulario de edición */}
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Teléfono:</label>
-          <input
-            type="text"
-            name="phone"
-            value={form.phone}
-            onChange={handleInputChange}
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Descripción:</label>
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleInputChange}
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            rows="3"
-          ></textarea>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Cédula:</label>
-          <input
-            type="text"
-            name="cedula"
-            value={form.cedula}
-            onChange={handleInputChange}
-            className={`w-full mt-1 p-2 border ${
-              editableCedula ? "border-gray-300" : "border-gray-200 bg-gray-100"
-            } rounded-md focus:ring-blue-500 focus:border-blue-500`}
-            disabled={!editableCedula}
-          />
-        </div>
-      </div>
-
-      {/* Botón de guardar */}
-      <motion.button
-        onClick={handleSave}
-        className="mt-6 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        Guardar Cambios
-      </motion.button>
-
-      {/* Sección de apartamentos creados */}
-      <div className="mt-10">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Apartamentos creados:</h2>
+      {/* Sección de Apartamentos */}
+      <div className="col-span-2 space-y-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+          <span>Apartamentos creados</span>
+          <span className="ml-2 text-sm bg-blue-500 text-white px-2 py-1 rounded-full">
+            {apartments.length}
+          </span>
+        </h2>
+        <hr className="mb-6 border-gray-300" />      
         {apartments.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {apartments.map((apartment) => (
-              <div 
-                key={apartment.id} 
-                className="bg-gray-100 p-4 rounded-lg shadow cursor-pointer hover:bg-gray-200 transition"
-                onClick={() => handleApartmentSelect(apartment)}
+              <div
+                key={apartment.id}
+                className="border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition bg-white"
               >
-                <h3 className="text-lg font-semibold text-gray-700">{apartment.direccion}</h3>
-                <p className="text-sm text-gray-600">{apartment.descripcion}</p>
-                <p className="text-sm text-gray-500">{apartment.precio}</p>
-                <div className="flex justify-between mt-2">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openEditModal(apartment);
-                    }}
-                    className="text-blue-500 hover:text-blue-700"
-                  >
-                    Editar
-                  </button>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openDeleteModal(apartment);
-                    }}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    Eliminar
-                  </button>
+                <img
+                  src={apartment.imgArray?.[0] || apartment.img || "/default-image.jpg"}
+                  alt={apartment.direccion}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                    {apartment.direccion}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-2">{apartment.descripcion}</p>
+                  <p className="text-sm font-bold text-gray-700">
+                    Precio: ${apartment.precio}
+                  </p>
+                  <div className="flex justify-between mt-4">
+                    <button
+                      onClick={() => handleEditApartment(apartment)}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEditingApartment(apartment);
+                        setIsDeleteModalOpen(true);
+                      }}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-gray-600">No hay apartamentos registrados con tu cédula.</p>
+          <p className="text-gray-500">No tienes apartamentos registrados.</p>
         )}
       </div>
 
-      {/* Selected Apartment Preview Modal */}
-      {selectedApartment && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-md w-full">
-            <h2 className="text-2xl font-bold mb-4">{selectedApartment.direccion}</h2>
-            <p className="text-gray-700 mb-2">{selectedApartment.descripcion}</p>
-            <p className="text-gray-600 font-semibold">Precio: {selectedApartment.precio}</p>
-            <button 
-              onClick={() => setSelectedApartment(null)}
-              className="mt-4 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Apartment Modal */}
+      {/* Modal para edición de apartamento */}
       {isEditModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg max-w-md w-full">
@@ -392,40 +359,22 @@ function UserProfile() {
           </div>
         </div>
       )}
-      
-      {/* Delete Apartment Modal */}
+
+      {/* Modal para confirmación de eliminación */}
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-md w-full">
-            <h2 className="text-2xl font-bold mb-4 text-red-600">Eliminar Apartamento</h2>
-            <p className="text-gray-700 mb-4">
-              Estás a punto de eliminar el apartamento: {selectedApartment.direccion}
-            </p>
-            <p className="text-gray-600 mb-2">
-              Escribe "Confirmar" para eliminar definitivamente este apartamento:
-            </p>
-            <input
-              type="text"
-              value={deleteConfirmation}
-              onChange={(e) => setDeleteConfirmation(e.target.value)}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-              placeholder="Confirmar"
-            />
-            <div className="flex space-x-4 mt-4">
-              <button 
-                onClick={deleteApartment}
-                disabled={deleteConfirmation !== "Confirmar"}
-                className={`flex-1 py-2 rounded-md ${
-                  deleteConfirmation === "Confirmar" 
-                    ? "bg-red-500 text-white hover:bg-red-600" 
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h3 className="text-xl font-bold mb-4">¿Seguro que deseas eliminar este apartamento?</h3>
+            <div className="mt-4 flex justify-between">
+              <button
+                onClick={handleDeleteApartment}
+                className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
               >
-                Eliminar Definitivamente
+                Eliminar
               </button>
-              <button 
+              <button
                 onClick={() => setIsDeleteModalOpen(false)}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-md hover:bg-gray-400"
+                className="bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
               >
                 Cancelar
               </button>
