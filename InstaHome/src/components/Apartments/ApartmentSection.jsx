@@ -143,13 +143,13 @@ const ApartmentModal = ({ apartment, onClose }) => {
           <p className="text-gray-700 text-lg mb-4">{apartment.descripcion}</p>
           <div className="space-y-2 text-gray-600">
             <p>
-              <strong>Habitaciones:</strong> {apartment.bedrooms || "N/A"}
+              <strong>Habitaciones:</strong> {apartment.habitaciones || "N/A"}
             </p>
             <p>
-              <strong>Baños:</strong> {apartment.bathrooms || "N/A"}
+              <strong>Baños:</strong> {apartment.banos || "N/A"}
             </p>
             <p>
-              <strong>Metros cuadrados:</strong> {apartment.m2 || "N/A"} m²
+              <strong>Metros cuadrados:</strong> {apartment.metrosCuadrados || "N/A"} m²
             </p>
           </div>
           <p className="text-xl font-semibold text-[#1E90FF] mt-6">
@@ -174,7 +174,7 @@ const ApartmentSection = ({ setActiveSection }) => {
   const [isRegisterHomeVisible, setIsRegisterHomeVisible] = useState(false);
   const [apartments, setApartments] = useState([]);
   const [allApartments, setAllApartments] = useState([]);
-  const [filters, setFilters] = useState({ minPrice: "", maxPrice: "", location: "" });
+  const [filters, setFilters] = useState({ minPrice: "", maxPrice: "", location: "" , filterHabitaciones: "", fiterBanos: "", filterMetrosCuadrados: ""});
   const [selectedApartment, setSelectedApartment] = useState(null);
   const db = getFirestore();
 
@@ -206,9 +206,9 @@ const ApartmentSection = ({ setActiveSection }) => {
         price: newHome.precio,
         img: newHome.img,
         details: newHome.details,
-        m2: newHome.m2,
-        bedrooms: newHome.bedrooms,
-        bathrooms: newHome.bathrooms,
+        m2: newHome.metrosCuadrados,
+        bedrooms: newHome.habitaciones,
+        bathrooms: newHome.banos,
       },
     ];
     setApartments(newApartmentsList);
@@ -239,7 +239,30 @@ const ApartmentSection = ({ setActiveSection }) => {
         apartment.direccion.toLowerCase().includes(filters.location.toLowerCase())
       );
     }
-
+    {/*FILTROOOOOOOOOOS, ORGANIZAR */}
+    if (filters.habitaciones) {
+      const habitaciones = parseInt(filters.habitaciones) || 0;
+      filteredApartments = filteredApartments.filter((apartment) => {
+        const habitaciones = parseInt(apartment.habitaciones);
+        return habitaciones == habitaciones; /*Solo la cantidad exacta del filtro*/ 
+      });
+    }
+    if (filters.banos) {
+      const banosFilter = parseInt(filters.banos) || 0;
+      filteredApartments = filteredApartments.filter((apartment) => {
+        const banosFilter = parseInt(apartment.banos);
+        return banosFilter == banos; /*Solo la cantidad exacta del filtro*/ 
+      });
+    }
+    if (filters.metrosCuadrados) {
+      const metrosCuadrados = parseInt(filters.metrosCuadrados) || 0;
+      filteredApartments = filteredApartments.filter((apartment) => {
+        const metrosCuadrados = parseInt(apartment.metrosCuadrados);
+        return metrosCuadrados == metrosCuadrados; /*Solo la cantidad exacta del filtro*/
+      });
+    }
+      
+        
     setApartments(filteredApartments);
   };
 
@@ -256,25 +279,24 @@ const ApartmentSection = ({ setActiveSection }) => {
   return (
     <>
       <motion.section
-        className="py-12 bg-gray-100"
+        className="py-8 bg-gray-100"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-10">
+          <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-8">
             Apartamentos Disponibles
           </h2>
-          {/*PARTE DE LOS FILTROS */}
-          <h3 className="text-2xl font-semibold text-gray-700 mb-4">Filtros</h3>
-          <hr className="mb-6 border-gray-300" />
-          <div className="flex justify-between mb-6">
-            <div className="flex space-x-4">
+          <h3 className="text-xl font-semibold text-gray-700 mb-4">Filtros</h3>
+          <hr className="mb-4 border-gray-300" />
+          <div className="flex flex-wrap justify-between mb-4 space-y-2 sm:space-y-0">
+            <div className="flex flex-wrap space-x-2">
               <input
                 type="number"
                 name="minPrice"
                 placeholder="Precio mínimo ($)"
-                className="p-3 border rounded-lg"
+                className="p-2 border rounded-lg"
                 value={filters.minPrice}
                 onChange={handleFilterChange}
               />
@@ -282,7 +304,7 @@ const ApartmentSection = ({ setActiveSection }) => {
                 type="number"
                 name="maxPrice"
                 placeholder="Precio máximo ($)"
-                className="p-3 border rounded-lg"
+                className="p-2 border rounded-lg"
                 value={filters.maxPrice}
                 onChange={handleFilterChange}
               />
@@ -290,26 +312,50 @@ const ApartmentSection = ({ setActiveSection }) => {
                 type="text"
                 name="location"
                 placeholder="Barrio"
-                className="p-3 border rounded-lg"
+                className="p-2 border rounded-lg"
                 value={filters.location}
+                onChange={handleFilterChange}
+              />
+              <input
+                type="number"
+                name="habitaciones"
+                placeholder="Habitaciones"
+                className="p-2 border rounded-lg"
+                value={filters.habitaciones}
+                onChange={handleFilterChange}
+              />
+              <input
+                type="number"
+                name="banos"
+                placeholder="Baños"
+                className="p-2 border rounded-lg"
+                value={filters.banos}
+                onChange={handleFilterChange}
+              />
+              <input
+                type="number"
+                name="metrosCuadrados"
+                placeholder="Metros Cuadrados"
+                className="p-2 border rounded-lg"
+                value={filters.metrosCuadrados}
                 onChange={handleFilterChange}
               />
               <button
                 onClick={applyFilters}
-                className="bg-sky-900 text-white py-3 px-6 rounded-lg hover:bg-secondary transition ease-in-out duration-300"
+                className="bg-sky-900 text-white py-2 px-4 rounded-lg hover:bg-secondary transition ease-in-out duration-300"
               >
                 Aplicar Filtros
               </button>
               <button
                 onClick={clearFilters}
-                className="bg-gray-500 text-white py-3 px-6 rounded-lg hover:bg-gray-600"
+                className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600"
               >
                 Limpiar Filtros
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {apartments.map((apartment, index) => (
               <div
                 key={apartment.id}
@@ -320,10 +366,10 @@ const ApartmentSection = ({ setActiveSection }) => {
                 <img
                   src={apartment.img}
                   alt="Imagen del apartamento"
-                  className="w-full h-48 object-cover rounded-t-lg"
+                  className="w-full h-32 object-cover rounded-t-lg"
                 />
-                <h3 className="text-xl font-bold mt-4">{apartment.direccion}</h3>
-                <p className="text-gray-600">{apartment.descripcion}</p>
+                <h3 className="text-lg font-bold mt-2">{apartment.direccion}</h3>
+                <p className="text-gray-600 text-sm">{apartment.descripcion}</p>
                 <p className="text-blue-500 font-bold mt-2">{apartment.precio}</p>
               </div>
             ))}

@@ -32,6 +32,9 @@ function UserProfile() {
     direccion: "",
     descripcion: "",
     precio: "",
+    banos: "",
+    habitaciones: "",
+    metrosCuadrados: "",
   });
 
   const auth = getAuth();
@@ -139,6 +142,10 @@ function UserProfile() {
       direccion: apartment.direccion,
       descripcion: apartment.descripcion,
       precio: apartment.precio,
+      banos : apartment.banos,
+      habitaciones : apartment.habitaciones,
+      metrosCuadrados : apartment.metrosCuadrados,
+
     });
     setIsEditModalOpen(true);
   };
@@ -150,6 +157,9 @@ function UserProfile() {
         direccion: editApartmentForm.direccion,
         descripcion: editApartmentForm.descripcion,
         precio: editApartmentForm.precio,
+        banos: editApartmentForm.banos,
+        habitaciones: editApartmentForm.habitaciones,
+        metrosCuadrados: editApartmentForm.metrosCuadrados,
       });
       setApartments((prevApartments) =>
         prevApartments.map((apartment) =>
@@ -329,6 +339,36 @@ function UserProfile() {
                   onChange={handleEditApartmentChange}
                   className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                   rows="3"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Habitaciones:</label>
+                <input
+                  type="text"
+                  name="habitaciones"
+                  value={editApartmentForm.habitaciones}
+                  onChange={handleEditApartmentChange}
+                  className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Baños:</label>
+                <input
+                  type="text"
+                  name="banos"
+                  value={editApartmentForm.banos}
+                  onChange={handleEditApartmentChange}
+                  className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Metros Cuadrados:</label>
+                <input
+                  type="text"
+                  name="metrosCuadrados"
+                  value={editApartmentForm.metrosCuadrados}
+                  onChange={handleEditApartmentChange}
+                  className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div>

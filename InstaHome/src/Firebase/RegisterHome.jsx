@@ -9,6 +9,9 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
     direccion: "",
     precio: "",
     img: "",
+    banos: "",
+    habitaciones: "",
+    metrosCuadrados: "",
   });
   const [cedula, setCedula] = useState("");
   const [loading, setLoading] = useState(false);
@@ -60,12 +63,15 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
         idCasa: `${Date.now()}`,
         img: formData.img,
         precio: formData.precio,
+        banos: formData.banos,
+        habitaciones: formData.habitaciones,
+        metrosCuadrados: formData.metrosCuadrados,
         timestamp: serverTimestamp(),
         cedula, // Agrega la cédula del usuario
       });
 
       setMessage("¡Hogar registrado con éxito!");
-      setFormData({ descripcion: "", direccion: "", precio: "", img: "" });
+      setFormData({ descripcion: "", direccion: "", precio: "", img: "", banos: "", habitaciones: "", metrosCuadrados: "" });
       onClose();
     } catch (error) {
       console.error("Error al registrar el hogar: ", error);
@@ -183,6 +189,48 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
                 required
               />
             </div>
+          </div>
+          <div className="w-full flex flex-col mt-4">
+            <label htmlFor="banos" className="text-base sm:text-lg font-medium text-gray-700 mb-2">
+              Cantidad de Baños
+            </label>
+            <input
+              type="number"
+              id="banos"
+              name="banos"
+              value={formData.banos}
+              onChange={handleChange}
+              className="mt-1 block w-full p-2 border rounded-md"
+              required
+            />
+          </div>
+          <div className="w-full flex flex-col mt-4">
+            <label htmlFor="habitaciones" className="text-base sm:text-lg font-medium text-gray-700 mb-2">
+              Cantidad de Habitaciones
+            </label>
+            <input
+              type="number"
+              id="habitaciones"
+              name="habitaciones"
+              value={formData.habitaciones}
+              onChange={handleChange}
+              className="mt-1 block w-full p-2 border rounded-md"
+              required
+            />
+          </div>
+          <div className="w-full flex flex-col mt-4">
+            <label htmlFor="metrosCuadrados" className="text-base sm:text-lg font-medium text-gray-700 mb-2">
+              Metros Cuadrados
+            </label>
+            <input
+              type="number"
+              id="metrosCuadrados"
+              name="metrosCuadrados"
+              value={formData.metrosCuadrados}
+              onChange={handleChange}
+              className="mt-1 block w-full p-2 border rounded-md"
+              required
+            />
           </div>
           <button
             type="submit"
