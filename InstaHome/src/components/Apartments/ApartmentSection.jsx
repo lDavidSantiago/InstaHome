@@ -239,26 +239,25 @@ const ApartmentSection = ({ setActiveSection }) => {
         apartment.direccion.toLowerCase().includes(filters.location.toLowerCase())
       );
     }
-    {/*FILTROOOOOOOOOOS, ORGANIZAR */}
     if (filters.habitaciones) {
       const habitaciones = parseInt(filters.habitaciones) || 0;
       filteredApartments = filteredApartments.filter((apartment) => {
-        const habitaciones = parseInt(apartment.habitaciones);
-        return habitaciones == habitaciones; /*Solo la cantidad exacta del filtro*/ 
+        const bedroomss = parseInt(apartment.habitaciones);
+        return bedroomss == habitaciones;  
       });
     }
     if (filters.banos) {
-      const banosFilter = parseInt(filters.banos) || 0;
+      const banos = parseInt(filters.banos) || 0;
       filteredApartments = filteredApartments.filter((apartment) => {
         const banosFilter = parseInt(apartment.banos);
-        return banosFilter == banos; /*Solo la cantidad exacta del filtro*/ 
+        return banosFilter == banos; 
       });
     }
     if (filters.metrosCuadrados) {
-      const metrosCuadrados = parseInt(filters.metrosCuadrados) || 0;
+      const M2 = parseInt(filters.metrosCuadrados) || 0;
       filteredApartments = filteredApartments.filter((apartment) => {
         const metrosCuadrados = parseInt(apartment.metrosCuadrados);
-        return metrosCuadrados == metrosCuadrados; /*Solo la cantidad exacta del filtro*/
+        return metrosCuadrados == M2; 
       });
     }
       
@@ -267,7 +266,7 @@ const ApartmentSection = ({ setActiveSection }) => {
   };
 
   const clearFilters = () => {
-    setFilters({ minPrice: "", maxPrice: "", location: "" });
+    setFilters({ minPrice: "", maxPrice: "", location: "" ,habitaciones: "", banos: "", metrosCuadrados: ""});
     setApartments(allApartments);
   };
 
