@@ -1,13 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { IoLogoGoogleplus } from "react-icons/io";
-import { registerWithEmail, signInWithGoogle } from '../../Firebase/Firebase'; // Importar las funciones de autenticación
+import { 
+  registerWithEmail, 
+  signInWithGoogle, 
+  onAuthStateChanged,
+  getCurrentUser 
+} from '../../Firebase/Firebase'; 
 import { motion } from 'framer-motion'; 
-
 
 const Login = ({ onLoginSuccess }) => {
   const [isActive, setIsActive] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [user, setUser] = useState(null);
+
+  // Check authentication state on component mount
+  useEffect(() => {
+    const checkAuthState = async () => {
+      try {
+        const currentUser = await getCurrentUser();
+        if (currentUser) {
+          // User is already logged in
+          setUser(currentUser);
+          // Store user info in local storage
+          localStorage.setItem('user', JSON.stringify(currentUser));
+          onLoginSuccess();
+        }
+      } catch (error) {
+        console.error("Error checking auth state:", error);
+      }
+    };
+
+    checkAuthState();
+
+    // Set up auth state listener
+    const unsubscribe = onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+        localStorage.setItem('user', JSON.stringify(user));
+      } else {
+        setUser(null);
+        localStorage.removeItem('user');
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [onLoginSuccess]);
 
   // Efecto para limpiar los inputs cada vez que cambia entre Sign Up y Sign In
   useEffect(() => {
@@ -17,13 +56,21 @@ const Login = ({ onLoginSuccess }) => {
 
   const handleManualLogin = async (e) => {
     e.preventDefault();
-    await registerWithEmail(email, password,name);
-    onLoginSuccess();
+    try {
+      await registerWithEmail(email, password);
+      onLoginSuccess();
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
 
   const handleGoogleLogin = async () => {
-    await signInWithGoogle();
-    onLoginSuccess();
+    try {
+      await signInWithGoogle();
+      onLoginSuccess();
+    } catch (error) {
+      console.error("Google login error:", error);
+    }
   };
 
   return (
@@ -34,7 +81,6 @@ const Login = ({ onLoginSuccess }) => {
       exit={{ opacity: 0, scale: 0.9 }} // Al desmontar
       transition={{ duration: 0.5, ease: "easeInOut" }} // Control de la duración
     >
-
         <div className="relative w-full max-w-4xl min-h-[480px] bg-white shadow-lg overflow-hidden rounded-lg">
           <div className="absolute inset-0 flex transition-transform duration-700 ease-in-out">
             {/* Sign-Up Form */}

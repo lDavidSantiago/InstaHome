@@ -5,7 +5,8 @@ import {
   GoogleAuthProvider, 
   signInWithPopup, 
   createUserWithEmailAndPassword, 
-  signOut 
+  signOut,
+  onAuthStateChanged as firebaseOnAuthStateChanged 
 } from "firebase/auth";
 import { getFirestore, setDoc, doc } from "firebase/firestore"; 
 
@@ -21,32 +22,22 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-// Iniciar sesión con Google
-export const signInWithGoogle = async () => {
-  const provider = new GoogleAuthProvider();
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
+// Función para obtener el usuario actual (con onAuthStateChanged)
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = firebaseOnAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      resolve(user);
+    }, reject);
+  });
+};
 
-    // Crear o actualizar perfil en la colección `users`
-    const userRef = doc(db, "users", user.uid);
-    await setDoc(userRef, {
-      name: user.displayName || "Sin nombre",
-      email: user.email,
-      cedula: "",
-      phone: "",
-      creationDate: user.metadata.creationTime,
-      lastLogin: new Date().toISOString(),
-      role: "user"
-    }, { merge: true });
-
-    console.log("Perfil guardado:", user.uid);
-  } catch (error) {
-    console.error("Error en autenticación con Google:", error.message);
-  }
+// Escuchar cambios en el estado de la autenticación
+export const onAuthStateChanged = (callback) => {
+  return firebaseOnAuthStateChanged(auth, callback);
 };
 
 // Registrar con email y contraseña
@@ -55,21 +46,47 @@ export const registerWithEmail = async (email, password, data) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    const userRef = doc(db, "users", user.uid);
-    await setDoc(userRef, {
-      name: data.name || "Sin nombre",
-      email: user.email,
-      cedula: data.cedula || "",
-      phone: data.phone || "",
-      creationDate: user.metadata.creationTime,
-      lastLogin: new Date().toISOString(),
-      role: "user"
-    });
-
+    // Crear o actualizar perfil en la colección `users` de Firestore
+    await createUserProfile(user, data);
     console.log("Usuario registrado y perfil creado:", user.uid);
+
+    return user;
   } catch (error) {
     console.error("Error al registrar:", error.message);
+    throw error;
   }
+};
+
+// Iniciar sesión con Google
+export const signInWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    // Crear o actualizar perfil en la colección `users` de Firestore
+    await createUserProfile(user);
+
+    console.log("Perfil guardado:", user.uid);
+    return user;
+  } catch (error) {
+    console.error("Error en autenticación con Google:", error.message);
+    throw error;
+  }
+};
+
+// Función para crear o actualizar el perfil del usuario en Firestore
+const createUserProfile = async (user, data = {}) => {
+  const userRef = doc(db, "users", user.uid);
+  await setDoc(userRef, {
+    name: user.displayName || "Sin nombre",
+    email: user.email,
+    cedula: data.cedula || "",
+    phone: data.phone || "",
+    creationDate: user.metadata.creationTime,
+    lastLogin: new Date().toISOString(),
+    role: "user"
+  }, { merge: true });
 };
 
 // Cerrar sesión
@@ -81,3 +98,5 @@ export const logout = async () => {
     console.error("Error al cerrar sesión:", error.message);
   }
 };
+
+export { auth, db };

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import images from "/src/assets/images/backgroundRegister.jpg";
 
 const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
@@ -9,9 +10,34 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
     precio: "",
     img: "",
   });
+  const [cedula, setCedula] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const db = getFirestore();
+  const auth = getAuth();
+
+  useEffect(() => {
+    const fetchCedula = async () => {
+      const user = auth.currentUser; // Usuario autenticado
+      if (user) {
+        const userQuery = query(
+          collection(db, "users"),
+          where("email", "==", user.email) // Suponiendo que el email es único
+        );
+        const querySnapshot = await getDocs(userQuery);
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          setCedula(userData.cedula); // Guarda la cédula
+        } else {
+          console.error("Usuario no encontrado en la colección 'users'.");
+        }
+      } else {
+        console.error("No hay un usuario autenticado.");
+      }
+    };
+
+    fetchCedula();
+  }, [auth, db]);
 
   if (!isVisible) return null;
 
@@ -35,23 +61,16 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
         img: formData.img,
         precio: formData.precio,
         timestamp: serverTimestamp(),
-      });
-
-      onHomeAdded({
-        id: docRef.id,
-        description: formData.descripcion,
-        address: formData.direccion,
-        price: formData.precio,
-        img: formData.img,
+        cedula, // Agrega la cédula del usuario
       });
 
       setMessage("¡Hogar registrado con éxito!");
       setFormData({ descripcion: "", direccion: "", precio: "", img: "" });
-      onClose(); 
+      onClose();
     } catch (error) {
       console.error("Error al registrar el hogar: ", error);
       setMessage("Ocurrió un error. Inténtalo de nuevo.");
-    } finally {
+    } finally { 
       setLoading(false);
     }
   };
@@ -75,7 +94,7 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
           </p>
         </div>
       </div>
-  
+
       {/* Sección derecha */}
       <div className="w-full sm:w-1/2 bg-slate-50 flex flex-col p-6 sm:p-20">
         <h1 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-10">
@@ -92,7 +111,7 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
         )}
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col justify-start" /* Cambiado de `justify-between` */
+          className="flex flex-col justify-start"
         >
           <div>
             <div className="w-full flex flex-col mt-2">
@@ -112,7 +131,7 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
                 required
               ></textarea>
             </div>
-  
+
             <div className="w-full flex flex-col mt-4">
               <label
                 htmlFor="direccion"
@@ -165,7 +184,6 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
               />
             </div>
           </div>
-          {/* Mueve el botón inmediatamente después de los campos */}
           <button
             type="submit"
             className="mt-10 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"

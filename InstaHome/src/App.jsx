@@ -1,5 +1,4 @@
-// src/App.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar/Navbar';
 import ApartmentSection from './components/Apartments/ApartmentSection';
 import HowItWorks from './components/HowItWorks/HowItWorks';
@@ -17,9 +16,18 @@ function App() {
     const [activeSection, setActiveSection] = useState('home');
     const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para saber si el usuario está logueado
 
+    useEffect(() => {
+        // Comprobar si el usuario está en localStorage al cargar la aplicación
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setIsLoggedIn(true);
+        }
+    }, []);
+
     const handleLoginSuccess = () => {
-        setIsLoggedIn(true); // Cuando el login sea exitoso
-        setActiveSection('home'); // Cambiar a la sección home
+        setIsLoggedIn(true);
+        localStorage.setItem('user', 'true'); // Almacenar información del usuario en localStorage
+        setActiveSection('home'); // Cambiar a la sección 'home' después de iniciar sesión
     };
 
     const handleNavClick = (section) => {
@@ -32,6 +40,7 @@ function App() {
 
     const handleLogout = async () => {
         await logout(); // Llamar a la función logout
+        localStorage.removeItem('user'); // Eliminar al usuario de localStorage
         setIsLoggedIn(false); // Actualizar el estado a no logueado
         setActiveSection('home'); // Regresar a la sección 'home' después de logout
     };
@@ -64,10 +73,10 @@ function App() {
                     {activeSection === 'profile' && <Profile />}
                     {activeSection === "RegisterHome" && (
                         <RegisterHome
-                        isVisible={true}
-                        onClose={() => setActiveSection("home")} // Regresar a Home después del cierre
+                            isVisible={true}
+                            onClose={() => setActiveSection("home")} // Regresar a Home después del cierre
                         />
-                     )}
+                    )}
                 </>
             )}
             <Footer setActiveSection={setActiveSection} />
