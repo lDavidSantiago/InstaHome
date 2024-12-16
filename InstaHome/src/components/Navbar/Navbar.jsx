@@ -36,7 +36,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                                 <div>
                                     <span>Carrera 28A # 14b-16</span>
                                     <br />
-                                    <span className="text-gray-300">Tulúa, Valle del Cauca, Colombia</span>
+                                    <span className="text-gray-300">Tuluá, Valle del Cauca, Colombia</span>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
@@ -75,7 +75,7 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
         <nav className="container mx-auto flex items-center justify-between py-2 px-8">
             {/* Contenedor del menú de navegación centrado */}
             <ul className="flex space-x-8 justify-center mx-auto">
-                {['home', 'howItWorks', 'help'].map((section) => (
+                {['home', 'howItWorks', 'help', ].map((section) => (
                 <li key={section}>
                     <a
                     href="#"
@@ -126,6 +126,13 @@ const Navbar = ({ setActiveSection, onLoginClick, onLogout, isLoggedIn }) => {
                         onClick={() => handleNavClick('RegisterHome')}
                         >
                         Registrar Hogar
+                        </a>
+                        <a
+                        href="#"
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        onClick={() => handleNavClick('favorites')}
+                        >
+                        Favoritos
                         </a>
                         <a
                         href="#"

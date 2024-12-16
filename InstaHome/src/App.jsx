@@ -9,6 +9,7 @@ import { logout } from './Firebase/Firebase'; // Importar la función de logout
 import RegisterHome from "./Firebase/RegisterHome";
 import Footer from './components/Footer/Footer';
 import Start from './components/Start/Start';
+import Favorites from './components/Apartments/Favorites';
 
 import './index.css';
 
@@ -77,6 +78,7 @@ function App() {
                             onClose={() => setActiveSection("home")} // Regresar a Home después del cierre
                         />
                     )}
+                    {activeSection === 'favorites' && <Favorites/>}
                 </>
             )}
             <Footer setActiveSection={setActiveSection} />
