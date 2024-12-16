@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import RegisterHome from "../../Firebase/RegisterHome";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { motion } from "framer-motion";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
@@ -18,6 +18,7 @@ const ApartmentModal = ({ apartment, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [contractGenerated, setContractGenerated] = useState(false);
   const [favorites, setFavorites] = useState({});
+  const db = getFirestore();
 
   const handleToggleFavorite = (apartmentId) => {
     setFavorites(prevFavorites => ({
@@ -46,7 +47,7 @@ const ApartmentModal = ({ apartment, onClose }) => {
     );
   };
 
-  const generateContract = () => {
+  const generateContract = async () => {
     const doc = new jsPDF();
     doc.setFont("times", "normal");
 
@@ -94,6 +95,15 @@ const ApartmentModal = ({ apartment, onClose }) => {
 
     doc.save(`Contrato_Arrendamiento_${apartment.direccion}.pdf`);
     setContractGenerated(true);
+
+    // Update the apartment status in Firestore
+    try {
+      const apartmentDocRef = doc(db, "actuCasa", apartment.id);
+      await updateDoc(apartmentDocRef, { estado: false });
+      alert("El apartamento ha sido marcado como no disponible.");
+    } catch (error) {
+      console.error("Error al actualizar el estado del apartamento:", error.message);
+    }
   };
 
   return (
@@ -158,6 +168,7 @@ const ApartmentModal = ({ apartment, onClose }) => {
           <button
             className="mt-4 bg-[#1E90FF] text-white px-4 py-2 rounded-lg hover:bg-[#007acc] hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-out cursor-pointer"
             onClick={generateContract}
+            disabled={!apartment.estado}
           >
             Alquilar y Generar Contrato
           </button>
