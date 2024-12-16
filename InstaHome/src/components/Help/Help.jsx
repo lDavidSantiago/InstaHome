@@ -1,11 +1,9 @@
-// src/components/HelpSection/HelpSection.js
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import emailjs from 'emailjs-com'; // Importa EmailJS
+import emailjs from 'emailjs-com';
 
-// Inicializa EmailJS
 (function() {
-  emailjs.init("beyEpuaGTYDor1lsH"); // Reemplaza con tu USER_ID de EmailJS
+  emailjs.init("beyEpuaGTYDor1lsH");
 })();
 
 const HelpSection = () => {
@@ -13,9 +11,8 @@ const HelpSection = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
-  // Función para enviar correo
   const sendEmail = (e) => {
-    e.preventDefault(); // Evita que se recargue la página
+    e.preventDefault();
 
     const templateParams = {
       to_name: 'Soporte',
@@ -38,25 +35,25 @@ const HelpSection = () => {
       case 'faq':
         return (
           <div className="text-left">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">Preguntas Frecuentes</h3>
-            <ul className="list-disc pl-5">
-              <li className="mb-2">
+            <h3 className="text-xl font-semibold text-gray-700 mb-4">Preguntas Frecuentes</h3>
+            <ul className="list-disc pl-5 space-y-4">
+              <li>
                 <strong>¿Cómo puedo arrendar una propiedad?</strong>
                 <p>Para arrendar una propiedad, puedes navegar por nuestra lista de propiedades disponibles y enviar una solicitud a través de nuestra plataforma.</p>
               </li>
-              <li className="mb-2">
+              <li>
                 <strong>¿Qué documentos necesito para arrendar?</strong>
                 <p>Generalmente, necesitarás una identificación válida, comprobante de ingresos y referencias personales. Puedes revisar los requisitos específicos en cada anuncio.</p>
               </li>
-              <li className="mb-2">
+              <li>
                 <strong>¿Puedo ver la propiedad antes de arrendar?</strong>
                 <p>Sí, te recomendamos programar una visita para conocer la propiedad en persona antes de tomar una decisión.</p>
               </li>
-              <li className="mb-2">
+              <li>
                 <strong>¿Qué debo hacer si tengo problemas con el arrendamiento?</strong>
                 <p>Si enfrentas problemas, contáctanos a través de nuestra sección de soporte, y estaremos encantados de ayudarte.</p>
               </li>
-              <li className="mb-2">
+              <li>
                 <strong>¿Puedo cancelar mi arrendamiento?</strong>
                 <p>Las políticas de cancelación varían según el arrendador. Te recomendamos leer los términos antes de finalizar el contrato.</p>
               </li>
@@ -66,9 +63,9 @@ const HelpSection = () => {
       case 'contact':
         return (
           <div className="text-left">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">Contacto Directo con Soporte</h3>
-            <form onSubmit={sendEmail}>
-              <div className="mb-4">
+            <h3 className="text-xl font-semibold text-gray-700 mb-4">Contacto Directo con Soporte</h3>
+            <form onSubmit={sendEmail} className="space-y-4">
+              <div>
                 <label className="block text-gray-600" htmlFor="email">Correo Electrónico:</label>
                 <input
                   type="email"
@@ -80,7 +77,7 @@ const HelpSection = () => {
                   required
                 />
               </div>
-              <div className="mb-4">
+              <div>
                 <label className="block text-gray-600" htmlFor="message">Mensaje:</label>
                 <textarea
                   id="message"
@@ -94,7 +91,7 @@ const HelpSection = () => {
               </div>
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
               >
                 Enviar
               </button>
@@ -107,8 +104,8 @@ const HelpSection = () => {
   };
 
   return (
-    <section className="relative bg-gray-100 py-12 min-h-screen flex items-start justify-center" >
-      <div className="absolute inset-0 bg-white bg-opacity-10 "></div>
+    <section className="relative bg-gray-100 py-12 min-h-screen flex items-start justify-center">
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-purple-100 py-16"></div>
       <motion.div
         className="relative max-w-3xl mx-auto bg-white shadow-lg rounded-lg text-center p-8"
         initial={{ opacity: 0, y: 20 }}
@@ -136,13 +133,13 @@ const HelpSection = () => {
 
         <div className="flex justify-center gap-6 mb-6">
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className={`px-4 py-2 rounded transition duration-300 ${activeSection === 'faq' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
             onClick={() => setActiveSection('faq')}
           >
             Preguntas Frecuentes
           </button>
           <button
-            className="bg-green-500 text-white px-4 py-2 rounded"
+            className={`px-4 py-2 rounded transition duration-300 ${activeSection === 'contact' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
             onClick={() => setActiveSection('contact')}
           >
             Contacto Soporte

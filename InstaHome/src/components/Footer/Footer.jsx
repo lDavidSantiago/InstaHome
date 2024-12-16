@@ -80,7 +80,7 @@ const Footer = ({setActiveSection}) => {
                 {/* Sección: Ofertar */}
                 <div className="flex flex-col items-center md:items-end">
                     <h3 className="text-lg font-bold mb-4">Oferte su inmueble con nosotros</h3>
-                    <a href="#ofertar" className="bg-blue-600 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-700 transition">
+                    <a href="https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjDh6Dtx6uKAxWnSTABHYf_AJ0QFnoECBYQAQ&url=https%3A%2F%2Fco.mileroticos.com%2Fescorts%2Fvalle-del-cauca%2Ftulua%2F&usg=AOvVaw1yW-K4LVqw55vmIEMIF7gn&opi=89978449v" className="bg-blue-600 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-700 transition">
                         OFERTAR
                     </a>
                 </div>

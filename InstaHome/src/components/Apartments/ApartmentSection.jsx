@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
 import RegisterHome from "../../Firebase/RegisterHome";
-import { getFirestore, collection, getDocs, doc, updateDoc } from "firebase/firestore";
-import { motion } from "framer-motion";
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  doc, 
+  updateDoc, 
+  getDoc,
+  serverTimestamp,
+  runTransaction
+} from "firebase/firestore";import { motion } from "framer-motion";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
 import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
-import imagenStart from '/src/assets/images/imagenStart.jpg';
 import jsPDF from "jspdf";
-import Start from "../Start/Start";
+
 
 const fadeInVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -48,6 +55,20 @@ const ApartmentModal = ({ apartment, onClose }) => {
   };
 
   const generateContract = async () => {
+
+    try {
+      // Primero, verificar si el apartamento está realmente disponible
+      const apartmentDocRef = doc(db, "actuCasa", apartment.id);
+      
+      // Usar una transacción para asegurar la consistencia
+      await runTransaction(db, async (transaction) => {
+        const apartmentDoc = await transaction.get(apartmentDocRef);
+        
+        // Verificar si el apartamento aún está disponible
+        if (!apartmentDoc.exists() || !apartmentDoc.data().estado) {
+          throw new Error("El apartamento ya no está disponible");
+        }
+
     const doc = new jsPDF();
     doc.setFont("times", "normal");
 
@@ -58,9 +79,9 @@ const ApartmentModal = ({ apartment, onClose }) => {
     doc.text(`Apartamento: ${apartment.direccion}`, 20, 40);
     doc.text(`Descripción: ${apartment.descripcion}`, 20, 50);
     doc.text(`Precio de arrendamiento: ${apartment.precio}`, 20, 60);
-    doc.text(`Habitaciones: ${apartment.bedrooms}`, 20, 70);
-    doc.text(`Baños: ${apartment.bathrooms}`, 20, 80);
-    doc.text(`Metros cuadrados: ${apartment.m2} m²`, 20, 90);
+    doc.text(`Habitaciones: ${apartment.habitaciones}`, 20, 70);
+    doc.text(`Baños: ${apartment.banos}`, 20, 80);
+    doc.text(`Metros cuadrados: ${apartment.metrosCuadrados} m²`, 20, 90);
 
     doc.text("------------------------------------------------------------------------", 20, 100);
 
@@ -93,17 +114,18 @@ const ApartmentModal = ({ apartment, onClose }) => {
     doc.text(`Fecha: ___________________________`, 20, 270);
     doc.text(`Lugar: ___________________________`, 20, 280);
 
-    doc.save(`Contrato_Arrendamiento_${apartment.direccion}.pdf`);
+    doc.save(`Contrato_Arrendamiento_${apartment.direccion}.pdf`)
+    ;
     setContractGenerated(true);
+    transaction.update(apartmentDocRef, { estado: false });
+    });
 
-    // Update the apartment status in Firestore
-    try {
-      const apartmentDocRef = doc(db, "actuCasa", apartment.id);
-      await updateDoc(apartmentDocRef, { estado: false });
-      alert("El apartamento ha sido marcado como no disponible.");
-    } catch (error) {
-      console.error("Error al actualizar el estado del apartamento:", error.message);
-    }
+    setContractGenerated(true);
+    alert("Contrato generado.");
+  } catch (error) {
+    console.error("Error al generar el contrato:", error.message);
+    alert(error.message || "No se pudo generar el contrato");
+  }
   };
 
   return (
