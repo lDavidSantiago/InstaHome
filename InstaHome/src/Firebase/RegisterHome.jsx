@@ -111,6 +111,13 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
             {message}
           </p>
         )}
+
+        {/* Mostrar advertencia si no hay cédula */}
+        {!cedula && (
+          <div className="text-red-600 mb-4 text-center font-medium">
+            Debes registrar tu cédula en tu perfil antes de crear un hogar.
+          </div>
+        )}
         <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-start"
@@ -231,7 +238,7 @@ const RegisterHome = ({ isVisible, onClose, onHomeAdded }) => {
           <button
             type="submit"
             className="mt-10 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
-            disabled={loading}
+            disabled={loading || !cedula}
           >
             {loading ? "Registrando..." : "Registrar"}
           </button>
